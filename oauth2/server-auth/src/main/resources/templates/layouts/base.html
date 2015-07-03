@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link th:href="@{/webjars/font-awesome/4.3.0/css/font-awesome.css}" rel="stylesheet" />
+<link th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+<link th:href="@{/css/styles.css}" rel="stylesheet" media="screen" />
+<title layout:title="$title">OAuth 2</title>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle Navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="">
+					<i class="fa fa-home"></i><span>HW OAuth2 Authentication Tool</span>
+				</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-host container">
+		<div layout:fragment="content">
+			<p>???</p>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" th:src="@{/webjars/jquery/2.1.4/dist/jquery.min.js}" />
+<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}" />
+<div layout:fragment="script"></div>
+</html>

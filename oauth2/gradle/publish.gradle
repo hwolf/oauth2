@@ -1,0 +1,20 @@
+
+configure(subprojects) {
+
+    apply plugin: 'maven-publish'
+
+    publishing {
+        repositories { 
+            maven { 
+                url "${rootProject.buildDir}/artifacts" 
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                groupId "$rootProject.name"
+                artifactId "$project.name"
+                version "$version"
+            }
+        }
+    }
+}
