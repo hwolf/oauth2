@@ -1,0 +1,13 @@
+.page-host {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50px;
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.navbar-brand .fa-home {
+	margin-right: 6px;
+}

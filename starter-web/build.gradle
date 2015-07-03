@@ -1,0 +1,13 @@
+
+dependencies {
+    compile project(':starter-utils')
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-undertow"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    
+    compile "com.github.lalyos:jfiglet:0.0.7"
+    
+    testCompile project(':starter-testutils')
+
+    runtime "org.jolokia:jolokia-core"
+}

@@ -1,0 +1,55 @@
+
+#
+# Common/default settings for all environments
+#
+
+spring:
+  application:
+    name: "OAuth2"
+
+server:
+  port: 9999
+  context-path: /uaa
+
+flyway:
+  enabled: true
+  init-on-migrate: true
+  table: t_schema_version
+
+management:
+  security:
+    enabled: true
+    role: admin
+
+endpoints:
+  jolokia:
+    sensitive: true
+  shutdown:
+    enabled: false
+
+---
+
+#
+# Settings for development
+#
+
+spring:
+  profiles: dev
+  thymeleaf:
+    cache: false
+
+---
+
+#
+# Settings for test
+#
+
+spring:
+  profiles: test
+  datasource:
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://localhost/test1_hwoauth2
+    username: test1
+    password: test1
+
+---
