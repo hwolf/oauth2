@@ -1,6 +1,0 @@
-include ':starter-web'
-include ':starter-utils'
-include ':starter-testutils'
-include ':server-auth'
-include ':server-example-resource'
-include ':server-example-ui'

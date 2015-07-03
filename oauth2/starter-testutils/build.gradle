@@ -1,5 +1,0 @@
-
-dependencies {
-    compile "org.dbunit:dbunit:2.5.1"
-    compile "com.github.springtestdbunit:spring-test-dbunit:1.2.0"
-}
