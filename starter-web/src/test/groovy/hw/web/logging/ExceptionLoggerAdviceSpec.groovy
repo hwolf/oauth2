@@ -21,7 +21,7 @@ class ExceptionLoggerAdviceTest extends Specification {
     @Rule
     public final LogbackVerifier logVerifier = new LogbackVerifier(Level.ERROR, ExceptionLoggerAdvice.class.name)
 
-    def exceptionShouldLogged() {
+    def "an exception should be logged"() {
 
         given:
         def request = new MockHttpServletRequest(requestURI: "/my-path", queryString: "x=x&a=b")
