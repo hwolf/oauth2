@@ -1,1 +1,0 @@
-# Example OAuth2 [![Build Status](https://travis-ci.org/hwolf/oauth2.svg?branch=master)]
