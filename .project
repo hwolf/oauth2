@@ -22,24 +22,4 @@
 		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.springframework.ide.eclipse.core.springnature</nature>
 	</natures>
-	<filteredResources>
-		<filter>
-			<id>1435117538183</id>
-			<name></name>
-			<type>26</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-projectRelativePath-matches-false-false-server-*</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1435117538185</id>
-			<name></name>
-			<type>26</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-projectRelativePath-matches-false-false-starter-*</arguments>
-			</matcher>
-		</filter>
-	</filteredResources>
 </projectDescription>
