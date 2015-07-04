@@ -27,7 +27,7 @@ configure(javaProjects) {
 
     ext {
         V_GUAVA = '18.0'
-        V_GROOVY = '2.3.10'
+        V_GROOVY = '2.3.11'
         V_JACKSON = '2.4.5'
     }
 
@@ -55,7 +55,7 @@ configure(javaProjects) {
         testCompile "org.codehaus.groovy:groovy-all:$V_GROOVY"
         testCompile "org.spockframework:spock-core:1.0-groovy-2.3"
         testCompile "org.spockframework:spock-spring:1.0-groovy-2.3"
-        testCompile "org.assertj:assertj-core:3.0.0"
+        //testCompile "org.assertj:assertj-core:3.0.0"
         testCompile "com.google.guava:guava-testlib:$V_GUAVA"
     }
 
@@ -100,16 +100,6 @@ task integrationTestReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/tests-integration")
 }
 
-//task jacocoTestReport(type: JacocoReport) {
-//    dependsOn subprojects*.test
-//    //reportOn subprojects*.test
-//    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-//    classDirectories =  files(subprojects.sourceSets.main.output)
-//    executionData = files(subprojects.jacocoTestReport.executionData)
-//    reports {
-//        //html.enabled = true
-//        xml.enabled = true
-//        //xml.destination = "$buildDir/reports/jacoco.xml"
-//        //csv.enabled = false
-//    }
-//}
+task ciBuild {
+    dependsOn build, subprojects*.jacocoTestReport
+}
