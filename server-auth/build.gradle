@@ -19,12 +19,15 @@ dependencies {
     
     runtime "org.jolokia:jolokia-core"
     runtime "org.hsqldb:hsqldb:2.3.3"
-    runtime "org.mariadb.jdbc:mariadb-java-client:1.1.9"
+    runtime ("org.mariadb.jdbc:mariadb-java-client:1.1.9") {
+        exclude group: 'net.java.dev.jna'
+    }
 
     testCompile "org.gebish:geb-spock:0.10.0"
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.46.0"
-    testCompile "org.seleniumhq.selenium:selenium-chrome-driver:2.46.0"
-    //testCompile "org.seleniumhq.selenium:selenium-support:2.46.0"
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.46.0" 
+    //testCompile "org.seleniumhq.selenium:selenium-chrome-driver:2.46.0"
+    testCompile "org.seleniumhq.selenium:selenium-support:2.46.0"
+    //testCompile "com.codeborne:phantomjsdriver:1.2.1"
 }
 
 group = 'hw'

@@ -1,12 +1,18 @@
 
 buildscript {
     repositories {
-        maven {   url "http://jcenter.bintray.com/" }
+        maven { 
+            url "http://jcenter.bintray.com/"
+        }
     }
-    dependencies {  classpath "org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE" }
+    dependencies { 
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE" 
+    }
 }
 
-plugins { id 'org.unbroken-dome.test-sets' version '1.1.0' }
+plugins { 
+    id 'org.unbroken-dome.test-sets' version '1.1.0' 
+}
 
 def javaProjects = subprojects
 
@@ -29,7 +35,9 @@ configure(javaProjects) {
     targetCompatibility = 1.8
 
     repositories {
-        maven {  url "http://jcenter.bintray.com/" }
+        maven {  
+            url "http://jcenter.bintray.com/"
+        }
     }
 
     testSets { integrationTest { dirName = 'test-integration' } }
