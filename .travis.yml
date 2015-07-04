@@ -4,4 +4,4 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew compile
+  - ./gradlew build -x integrationTest
