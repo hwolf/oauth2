@@ -7,20 +7,18 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 
 /**
  * A JUnit rule which captures log events.
- *
- * @see <a href="https://gist.github.com/tzachz/6048356">copied and modified for Log4J2</a>
  */
 public class LogbackVerifier implements TestRule {
 
     private final Level level;
     private final String loggerName;
 
-    private AppenderMock appender;
+    private ListAppender<ILoggingEvent> appender;
 
     public LogbackVerifier(Level info, Class<?> loggerName) {
         this(info, loggerName.getName());
@@ -38,26 +36,37 @@ public class LogbackVerifier implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 before();
-                base.evaluate();
+                try {
+                    base.evaluate();
+                } finally {
+                    after();
+                }
             }
         };
     }
 
     public ILoggingEvent extractNextLogEvent() {
-        return appender.extractNextEvent();
+        return appender.list.remove(0);
     }
 
     private void before() {
-        appender = new AppenderMock();
-        appender.start();
+        appender = new ListAppender<>();
         addAppender();
+        appender.start();
     }
 
     private void addAppender() {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger logger = loggerContext.getLogger(loggerName);
+        Logger logger = getLogger();
         logger.addAppender(appender);
         logger.setLevel(level);
         logger.setAdditive(false);
+    }
+
+    private void after() {
+        getLogger().detachAppender(appender);
+    }
+
+    protected Logger getLogger() {
+        return (Logger) LoggerFactory.getLogger(loggerName);
     }
 }
