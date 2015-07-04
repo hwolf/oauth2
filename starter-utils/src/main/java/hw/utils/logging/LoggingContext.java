@@ -16,6 +16,10 @@ public class LoggingContext {
         MDC.remove(MDC_KEY);
     }
 
+    public static String getContextId() {
+        return MDC.get(MDC_KEY);
+    }
+
     private LoggingContext() {
         // Avoid instantiation
     }

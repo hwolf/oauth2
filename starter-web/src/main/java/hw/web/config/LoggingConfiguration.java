@@ -23,7 +23,7 @@ public class LoggingConfiguration {
 
     private FilterRegistrationBean createFilterRegistration(LoggingFilter filter) {
         FilterRegistrationBean registration = new FilterRegistrationBean(filter);
-        registration.setOrder(Integer.MIN_VALUE + 1);
+        registration.setOrder(Integer.MIN_VALUE);
         return registration;
     }
 
