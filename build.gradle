@@ -101,5 +101,5 @@ task integrationTestReport(type: TestReport) {
 }
 
 task ciBuild {
-    dependsOn build, subprojects*.jacocoTestReport
+    dependsOn allprojects*.build, subprojects*.jacocoTestReport
 }
