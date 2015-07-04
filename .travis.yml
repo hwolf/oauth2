@@ -13,4 +13,5 @@ script:
   - ./gradlew ciBuild
 
 after_success:
+  - find . -name jacoco\*.xml
   - bash <(curl -s https://codecov.io/bash) -v
