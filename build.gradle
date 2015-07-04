@@ -76,36 +76,40 @@ configure(javaProjects) {
         outputs.upToDateWhen { false }
     }
 
-    jacoco { toolVersion = "0.7.4.201502262128" }
+    jacoco { toolVersion = "0.7.5.201505241946" }
 
     check.dependsOn integrationTest
     integrationTest.mustRunAfter test
-}
 
-task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/tests-unit")
-    reportOn subprojects*.test
-}
-
-task integrationTestReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/tests-integration")
-    reportOn subprojects*.integrationTest
-}
-
-task jacocoTestReport(type: JacocoReport) {
-    dependsOn = subprojects*.test
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories =  files(subprojects.sourceSets.main.output)
-    executionData = files(subprojects.jacocoTestReport.executionData)
-    reports {
-        html.enabled = true
-        xml.enabled = true
-        csv.enabled = false
+    jacocoTestReport {
+        reports {
+            html.enabled true
+            xml.enabled true
+            csv.enabled false
+        }
     }
 }
 
-// Tasks for CI
-if (project.version != "unspecified") {
-    apply from: "gradle/sonar.gradle"
-    apply from: "gradle/publish.gradle"
+task testReport(type: TestReport) {
+    reportOn subprojects*.test
+    destinationDir = file("$buildDir/reports/tests-unit")
 }
+
+task integrationTestReport(type: TestReport) {
+    reportOn subprojects*.integrationTest
+    destinationDir = file("$buildDir/reports/tests-integration")
+}
+
+//task jacocoTestReport(type: JacocoReport) {
+//    dependsOn subprojects*.test
+//    //reportOn subprojects*.test
+//    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+//    classDirectories =  files(subprojects.sourceSets.main.output)
+//    executionData = files(subprojects.jacocoTestReport.executionData)
+//    reports {
+//        //html.enabled = true
+//        xml.enabled = true
+//        //xml.destination = "$buildDir/reports/jacoco.xml"
+//        //csv.enabled = false
+//    }
+//}
