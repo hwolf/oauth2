@@ -88,30 +88,33 @@ configure(javaProjects) {
             csv.enabled false
         }
     }
-    
-    
+
     task jacocoIntegrationTestReport(type: JacocoReport) {
-        dependsOn = subprojects*.integrationTest
-        sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(subprojects.sourceSets.main.output)
-        executionData = files(subprojects.jacocoTestReport.executionData)
+        //dependsOn integrationTest
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(sourceSets.main.output)
+        executionData tasks.integrationTest
         reports {
             html.enabled = true
             xml.enabled = true
             csv.enabled = false
         }
     }
+    
+    jacocoIntegrationTestReport.onlyIf {
+        tasks.integrationTest
+    }    
 }
 
-task testReport(type: TestReport) {
-    reportOn subprojects*.test
-    destinationDir = file("$buildDir/reports/tests-unit")
-}
-
-task integrationTestReport(type: TestReport) {
-    reportOn subprojects*.integrationTest
-    destinationDir = file("$buildDir/reports/tests-integration")
-}
+//task testReport(type: TestReport) {
+//    reportOn subprojects*.test
+//    destinationDir = file("$buildDir/reports/tests-unit")
+//}
+//
+//task integrationTestReport(type: TestReport) {
+//    reportOn subprojects*.integrationTest
+//    destinationDir = file("$buildDir/reports/tests-integration")
+//}
 
 task ciBuild {
     dependsOn allprojects*.build, subprojects*.jacocoTestReport, subprojects*.jacocoIntegrationTestReport
