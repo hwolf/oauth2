@@ -10,7 +10,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 script:
-  - ./gradlew build
+  - ./gradlew ciBuild
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
