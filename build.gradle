@@ -90,7 +90,6 @@ configure(javaProjects) {
     }
 
     task jacocoIntegrationTestReport(type: JacocoReport) {
-        //dependsOn integrationTest
         sourceDirectories = files(sourceSets.main.allSource.srcDirs)
         classDirectories =  files(sourceSets.main.output)
         executionData tasks.integrationTest
@@ -105,16 +104,6 @@ configure(javaProjects) {
         tasks.integrationTest
     }    
 }
-
-//task testReport(type: TestReport) {
-//    reportOn subprojects*.test
-//    destinationDir = file("$buildDir/reports/tests-unit")
-//}
-//
-//task integrationTestReport(type: TestReport) {
-//    reportOn subprojects*.integrationTest
-//    destinationDir = file("$buildDir/reports/tests-integration")
-//}
 
 task ciBuild {
     dependsOn allprojects*.build, subprojects*.jacocoTestReport, subprojects*.jacocoIntegrationTestReport
