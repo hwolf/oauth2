@@ -10,6 +10,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--port=8081"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="server-example-ui"/>
 <booleanAttribute key="spring.boot.debug.enable" value="false"/>
+<booleanAttribute key="spring.boot.lifecycle.enable" value="true"/>
 <booleanAttribute key="spring.boot.livebean.enable" value="true"/>
 <stringAttribute key="spring.boot.livebean.port" value="54403"/>
 <stringAttribute key="spring.boot.profile" value="dev"/>
