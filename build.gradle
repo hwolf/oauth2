@@ -111,6 +111,10 @@ configure(javaProjects) {
             tasks.integrationTest
         }
     }
+    
+    task reports {
+        dependsOn jacocoTestReport, jacocoIntegrationTestReport
+    }
 }
 
 task jacocoTestRootReport(type: JacocoReport) {
@@ -165,5 +169,5 @@ task integrationTestRootReport(type: TestReport) {
 }
 
 task ciBuild {
-    dependsOn allprojects*.build, testRootReport, integrationTestRootReport, jacocoTestRootReport, jacocoIntegrationTestRootReport
+    dependsOn allprojects*.build, subprojects*.reports, testRootReport, integrationTestRootReport, jacocoTestRootReport, jacocoIntegrationTestRootReport
 }
