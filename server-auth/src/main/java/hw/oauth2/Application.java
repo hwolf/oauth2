@@ -47,7 +47,7 @@ public class Application extends ApplicationBase {
 
         @Bean
         public PasswordEncoder passwordEncoder() {
-            return MyPasswordEncoder.builder().withPreferedEncoder("bcrypt-1", new BCryptPasswordEncoder(10)).build();
+            return MyPasswordEncoder.builder().defaultEncoder("bcrypt-1", new BCryptPasswordEncoder(10)).build();
         }
 
         @Bean
