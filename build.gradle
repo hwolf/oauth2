@@ -77,15 +77,33 @@ configure(javaProjects) {
         }
     }
 
-    tasks.withType(Test) {
+    test {
         reports {
             html.enabled = false
-            //html.destination = file("${reporting.baseDir}/${name}")
             junitXml.destination = file("${buildDir}/test-results/${name}")
         }
 
         outputs.upToDateWhen { false }
     }
+    
+    integrationTest {
+        reports {
+            html.enabled = false
+            junitXml.enabled = false
+        }
+
+        outputs.upToDateWhen { false }
+    }
+
+//    tasks.withType(Test) {
+//        reports {
+//            html.enabled = false
+//            //html.destination = file("${reporting.baseDir}/${name}")
+//            junitXml.destination = file("${buildDir}/test-results/${name}")
+//        }
+//
+//        outputs.upToDateWhen { false }
+//    }
 
     check.dependsOn integrationTest
     integrationTest.mustRunAfter test
@@ -98,66 +116,69 @@ configure(javaProjects) {
         }
     }
 
-    task jacocoIntegrationTestReport(type: JacocoReport) {
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(sourceSets.main.output)
-        executionData tasks.integrationTest
-        reports {
-            html.enabled = false
-            xml.enabled = false
-            csv.enabled = false
-        }
-        onlyIf {
-            tasks.integrationTest
-        }
-    }
-    
-    task reports {
-        dependsOn jacocoTestReport, jacocoIntegrationTestReport
-    }
+//    task jacocoIntegrationTestReport(type: JacocoReport) {
+//        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+//        classDirectories =  files(sourceSets.main.output)
+//        executionData tasks.integrationTest
+//        reports {
+//            html.enabled = false
+//            xml.enabled = false
+//            csv.enabled = false
+//        }
+//        onlyIf {
+//            tasks.integrationTest
+//        }
+//    }
+//    
+//    task reports {
+//        dependsOn jacocoTestReport, jacocoIntegrationTestReport
+//    }
 }
 
-task jacocoTestRootReport(type: JacocoReport) {
-    dependsOn subprojects.test
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(subprojects.sourceSets.main.output)
-    executionData = files(subprojects.tasks.jacocoTestReport.executionData)
-    reports {
-        html.enabled = true
-        html.destination = file("${reporting.baseDir}/jacocoTest")
-        xml.enabled = false
-        csv.enabled = false
-    }
-    onlyIf = { 
-        true 
-    }
-    doFirst {
-        executionData = files(executionData.findAll {
-            it.exists()
-        })
-    }
-}
+//task jacocoTestRootReport(type: JacocoReport) {
+//    dependsOn subprojects.test
+//    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+//    classDirectories = files(subprojects.sourceSets.main.output)
+//    
+//    println "XXX " + subprojects.tasks.test.class
+//    executionData = subprojects.tasks.test
+//    reports {
+//        html.enabled = true
+//        html.destination = file("${reporting.baseDir}/jacocoTest")
+//        xml.enabled = false
+//        csv.enabled = false
+//    }
+//    onlyIf = { 
+//        true 
+//    }
+//    doFirst {
+//        executionData = files(executionData.findAll {
+//            it.exists()
+//        })
+//    }
+//}
 
-task jacocoIntegrationTestRootReport(type: JacocoReport) {
-    dependsOn subprojects.integrationTest
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(subprojects.sourceSets.main.output)
-    executionData = files(subprojects.tasks.jacocoIntegrationTestReport.executionData)
-    reports {
-        html.enabled = true
-        html.destination = file("${reporting.baseDir}/jacocoIntegrationTest")
-        xml.enabled = false
-        csv.enabled = false
-    }
-    onlyIf = {
-        true
-    }
-    doFirst {
-        executionData = files(executionData.findAll {
-            it.exists()
-        })
-    }
-}
+//task jacocoIntegrationTestRootReport(type: JacocoReport) {
+//    dependsOn subprojects.integrationTest
+//    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+//    classDirectories = files(subprojects.sourceSets.main.output)
+//    executionData = files(subprojects.tasks.integrationTest.executionData)
+//    reports {
+//        html.enabled = true
+//        html.destination = file("${reporting.baseDir}/jacocoIntegrationTest")
+//        xml.enabled = false
+//        csv.enabled = false
+//    }
+//    onlyIf = {
+//        true
+//    }
+//    doFirst {
+//        executionData = files(executionData.findAll {
+//            it.exists()
+//        })
+//    }
+//}
+
 task testRootReport(type: TestReport) {
     reportOn subprojects*.test
     destinationDir = file("${reporting.baseDir}/test")
@@ -169,5 +190,10 @@ task integrationTestRootReport(type: TestReport) {
 }
 
 task ciBuild {
-    dependsOn allprojects*.build, subprojects*.reports, testRootReport, integrationTestRootReport, jacocoTestRootReport, jacocoIntegrationTestRootReport
+    dependsOn allprojects*.build, 
+        subprojects*.jacocoTestReport, 
+        testRootReport, 
+        integrationTestRootReport //, 
+        //jacocoTestRootReport, 
+        //jacocoIntegrationTestRootReport
 }
