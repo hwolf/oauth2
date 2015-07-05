@@ -104,7 +104,7 @@ configure(javaProjects) {
         executionData tasks.integrationTest
         reports {
             html.enabled = false
-            xml.enabled = true
+            xml.enabled = false
             csv.enabled = false
         }
         onlyIf {
