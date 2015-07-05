@@ -16,10 +16,23 @@ plugins {
 
 def javaProjects = subprojects
 
+configure(allprojects) {
+    apply plugin: 'jacoco'
+    
+    repositories {
+        maven {  
+            url "http://jcenter.bintray.com/"
+        }
+    }
+
+    jacoco {
+        toolVersion = "0.7.5.201505241946" 
+    }
+}
+
 configure(javaProjects) {
     apply plugin: 'java'
     apply plugin: 'groovy'
-    apply plugin: 'jacoco'
     apply plugin: 'spring-boot'
     apply plugin: 'org.unbroken-dome.test-sets'
 
@@ -34,13 +47,11 @@ configure(javaProjects) {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    repositories {
-        maven {  
-            url "http://jcenter.bintray.com/"
+    testSets {
+        integrationTest { 
+            dirName = 'test-integration'
         }
     }
-
-    testSets { integrationTest { dirName = 'test-integration' } }
 
     configurations {
         all*.exclude module: 'commons-logging'
@@ -68,24 +79,22 @@ configure(javaProjects) {
 
     tasks.withType(Test) {
         reports {
-            html.enabled = true
-            html.destination = file("${reporting.baseDir}/${name}")
+            html.enabled = false
+            //html.destination = file("${reporting.baseDir}/${name}")
             junitXml.destination = file("${buildDir}/test-results/${name}")
         }
 
         outputs.upToDateWhen { false }
     }
 
-    jacoco { toolVersion = "0.7.5.201505241946" }
-
     check.dependsOn integrationTest
     integrationTest.mustRunAfter test
 
     jacocoTestReport {
         reports {
-            html.enabled true
-            xml.enabled true
-            csv.enabled false
+            html.enabled = false
+            xml.enabled = true
+            csv.enabled = false
         }
     }
 
@@ -94,17 +103,67 @@ configure(javaProjects) {
         classDirectories =  files(sourceSets.main.output)
         executionData tasks.integrationTest
         reports {
-            html.enabled = true
+            html.enabled = false
             xml.enabled = true
             csv.enabled = false
         }
+        onlyIf {
+            tasks.integrationTest
+        }
     }
-    
-    jacocoIntegrationTestReport.onlyIf {
-        tasks.integrationTest
-    }    
+}
+
+task jacocoTestRootReport(type: JacocoReport) {
+    dependsOn subprojects.test
+    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.tasks.jacocoTestReport.executionData)
+    reports {
+        html.enabled = true
+        html.destination = file("${reporting.baseDir}/jacocoTest")
+        xml.enabled = false
+        csv.enabled = false
+    }
+    onlyIf = { 
+        true 
+    }
+    doFirst {
+        executionData = files(executionData.findAll {
+            it.exists()
+        })
+    }
+}
+
+task jacocoIntegrationTestRootReport(type: JacocoReport) {
+    dependsOn subprojects.integrationTest
+    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.tasks.jacocoIntegrationTestReport.executionData)
+    reports {
+        html.enabled = true
+        html.destination = file("${reporting.baseDir}/jacocoIntegrationTest")
+        xml.enabled = false
+        csv.enabled = false
+    }
+    onlyIf = {
+        true
+    }
+    doFirst {
+        executionData = files(executionData.findAll {
+            it.exists()
+        })
+    }
+}
+task testRootReport(type: TestReport) {
+    reportOn subprojects*.test
+    destinationDir = file("${reporting.baseDir}/test")
+}
+
+task integrationTestRootReport(type: TestReport) {
+    reportOn subprojects*.integrationTest
+    destinationDir = file("${reporting.baseDir}/integrationTest")
 }
 
 task ciBuild {
-    dependsOn allprojects*.build, subprojects*.jacocoTestReport, subprojects*.jacocoIntegrationTestReport
+    dependsOn allprojects*.build, testRootReport, integrationTestRootReport, jacocoTestRootReport, jacocoIntegrationTestRootReport
 }
