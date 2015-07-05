@@ -1,3 +1,3 @@
 # Example OAuth2 Authorization Server
 
-image:https://travis-ci.org/hwolf/oauth2.svg?branch=master["Build Status", link="https://travis-ci.org/hwolf/oauth2"] image:https://codecov.io/github/hwolf/oauth2/coverage.svg?branch=master["Code Coverage", link="https://codecov.io/github/hwolf/oauth2"]
+image:https://snap-ci.com/hwolf/oauth2/branch/master/build_image["Build Status", link="https://snap-ci.com/hwolf/oauth2/branch/master"] image:https://codecov.io/github/hwolf/oauth2/coverage.svg?branch=master["Code Coverage", link="https://codecov.io/github/hwolf/oauth2"]

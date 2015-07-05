@@ -16,17 +16,17 @@ dependencies {
 
 // Find a better way to this
 ext {
-    TRAVIS_COMMIT = System.getenv('TRAVIS_COMMIT') ? System.getenv('TRAVIS_COMMIT') : "???"
-    TRAVIS_BRANCH = System.getenv('TRAVIS_BRANCH') ? System.getenv('TRAVIS_BRANCH') : "???"
-    TRAVIS_BUILD_NUMBER = System.getenv('TRAVIS_BUILD_NUMBER') ? System.getenv('TRAVIS_BUILD_NUMBER') : "???"
+    COMMIT = System.getenv('SNAP_COMMIT') ? System.getenv('SNAP_COMMIT') : "???"
+    BRANCH = System.getenv('SNAP_BRANCH') ? System.getenv('SNAP_BRANCH') : "???"
+    BUILD_NUMBER = System.getenv('SNAP_PIPELINE_COUNTER') ? System.getenv('SNAP_PIPELINE_COUNTER') : "???"
 }
 
 processResources {
     filesMatching("build-info.properties") {
         filter (ReplaceTokens, tokens: [
-            "TRAVIS_COMMIT": TRAVIS_COMMIT,
-            "TRAVIS_BRANCH": TRAVIS_BRANCH,
-            "TRAVIS_BUILD_NUMBER": TRAVIS_BUILD_NUMBER
+            "COMMIT": COMMIT,
+            "BRANCH": BRANCH,
+            "BUILD_NUMBER": BUILD_NUMBER
         ])
     }
 }
