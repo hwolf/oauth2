@@ -13,7 +13,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 /**
  * Tests for {@link ExceptionLoggerAdvice}.
  */
-class ExceptionLoggerAdviceTest extends Specification {
+class ExceptionLoggerAdviceSpec extends Specification {
 
     static class MyException extends Exception {
     }
