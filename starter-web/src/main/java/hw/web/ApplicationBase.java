@@ -1,8 +1,5 @@
 package hw.web;
 
-import hw.utils.config.UtilsConfiguration;
-import hw.web.config.LoggingConfiguration;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.groovy.template.GroovyTemplateAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,9 +11,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 
+import hw.utils.config.UtilsConfiguration;
+import hw.web.config.LoggingConfiguration;
+
 @SpringBootApplication(exclude = { GroovyTemplateAutoConfiguration.class })
 @Import({ LoggingConfiguration.class, UtilsConfiguration.class })
 @PropertySource("classpath:starter-web.properties")
+@PropertySource("classpath:build-info.properties")
 public class ApplicationBase {
 
     @Bean

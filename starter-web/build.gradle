@@ -1,4 +1,6 @@
 
+import org.apache.tools.ant.filters.ReplaceTokens
+
 dependencies {
     compile project(':starter-utils')
     compile "org.springframework.boot:spring-boot-starter-web"
@@ -10,4 +12,14 @@ dependencies {
     testCompile project(':starter-testutils')
 
     runtime "org.jolokia:jolokia-core"
+}
+
+processResources {
+    filesMatching("**/build-info.properties") {
+        filter (ReplaceTokens, tokens: [
+            "TRAVIS_COMMIT": System.getProperty('TRAVIS_COMMIT', '???'),
+            "TRAVIS_BUILD_NUMBER": System.getProperty('TRAVIS_BUILD_NUMBER', '???'),
+            "TRAVIS_BRANCH": System.getProperty('TRAVIS_BRANCH', '???')
+        ])
+    }
 }
