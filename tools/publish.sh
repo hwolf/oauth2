@@ -4,7 +4,6 @@ if [ "$TRAVIS_REPO_SLUG" == "hwolf/oauth2" ] && [ "$TRAVIS_PULL_REQUEST" == "fal
 
   echo -e "Publishing artifacts and reports...\n"
 
-  mkdir -p $HOME/reports-latest
   cp -R build/reports $HOME/reports-latest
   mkdir -p $HOME/artifacts-latest
   cp -R server-*/build/libs/*.jar $HOME/artifacts-latest
