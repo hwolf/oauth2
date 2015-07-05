@@ -13,7 +13,7 @@ script:
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
-- ./tools/publish.sh
+- bash ./tools/publish.sh
 
 env:
   global:
