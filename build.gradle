@@ -110,17 +110,11 @@ configure(javaProjects) {
 task testRootReport(type: TestReport) {
     reportOn subprojects*.test
     destinationDir = file("${reporting.baseDir}/test")
-    test.testLogging { 
-        exceptionFormat "full" 
-    }
 }
 
 task integrationTestRootReport(type: TestReport) {
     reportOn subprojects*.integrationTest
     destinationDir = file("${reporting.baseDir}/integrationTest")
-    test.testLogging { 
-        exceptionFormat "full" 
-    }
 }
 
 task ciBuild {

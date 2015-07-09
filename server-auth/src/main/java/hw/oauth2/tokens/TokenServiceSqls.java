@@ -53,7 +53,8 @@ class TokenServiceSqls {
 
     static final String SQL_INSERT_ACCESS_TOKEN = "insert into " //
             + "    t_access_tokens " //
-            + "    (token_id, token, authentication_id, user_id, client_id, authentication, refresh_token) " + "values " //
+            + "    (token_id, token, authentication_id, user_id, client_id, authentication, refresh_token) "
+            + "values " //
             + "    (?, ?, ?, ?, ?, ?, ?)";
 
     static final String SQL_DELETE_ACCESS_TOKEN = "delete from " //
