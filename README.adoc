@@ -2,3 +2,4 @@
 
 image:https://snap-ci.com/hwolf/oauth2/branch/master/build_image["Build Status", link="https://snap-ci.com/hwolf/oauth2/branch/master"] 
 image:https://codecov.io/github/hwolf/oauth2/coverage.svg?branch=master["Code Coverage", link="https://codecov.io/github/hwolf/oauth2"]
+image:https://badges.ondemand.coverity.com/jobs/sre0h0tnlh28v3ud9jgc3srtag["Code Advisor On Demand Status", link="https://ondemand.coverity.com/jobs/sre0h0tnlh28v3ud9jgc3srtag/results"]
