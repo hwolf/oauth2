@@ -1,5 +1,12 @@
 
-springBoot { bootRepackage.enabled = true }
+springBoot { 
+    bootRepackage.enabled = true
+}
+
+test {
+    systemProperties = System.properties
+}
+
 
 dependencies {
     compile project(":starter-web")
@@ -21,7 +28,8 @@ dependencies {
     runtime ("org.mariadb.jdbc:mariadb-java-client:1.1.9") {
         exclude group: 'net.java.dev.jna'
     }
-
+    runtime "mysql:mysql-connector-java:5.1.36"
+    
     testCompile "org.gebish:geb-spock:0.10.0"
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.46.0" 
     //testCompile "org.seleniumhq.selenium:selenium-chrome-driver:2.46.0"
