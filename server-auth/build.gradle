@@ -3,21 +3,20 @@ springBoot { bootRepackage.enabled = true }
 
 dependencies {
     compile project(":starter-web")
-    compile "org.springframework.boot:spring-boot-starter-thymeleaf"
     compile "org.springframework.boot:spring-boot-starter-security"
+    compile "org.springframework.boot:spring-boot-starter-thymeleaf"
     compile "org.springframework.boot:spring-boot-starter-jdbc"
     compile "org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE"
 
     compile "org.thymeleaf:thymeleaf-spring4"
     compile "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect"
 
-    compile "org.flywaydb:flyway-core"
-
     compile "org.webjars:bootstrap:3.3.5"
     compile "org.webjars:font-awesome:4.3.0-2"
     compile "org.webjars:jquery:2.1.4"
     
     runtime "org.jolokia:jolokia-core"
+    runtime "org.flywaydb:flyway-core"
     runtime "org.hsqldb:hsqldb:2.3.3"
     runtime ("org.mariadb.jdbc:mariadb-java-client:1.1.9") {
         exclude group: 'net.java.dev.jna'

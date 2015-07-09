@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -20,19 +21,32 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import hw.oauth2.approvals.ApprovalsServiceImpl;
-import hw.oauth2.authentication.AuthenticationListener;
-import hw.oauth2.authentication.ClientServiceImpl;
+import hw.oauth2.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.MyPasswordEncoder;
-import hw.oauth2.authentication.UserService;
-import hw.oauth2.authentication.UserServiceImpl;
+import hw.oauth2.clients.ClientServiceImpl;
+import hw.oauth2.tokens.TokenServiceImpl;
+import hw.oauth2.users.AuditLoginResult;
+import hw.oauth2.users.UserDetailsServiceImpl;
 import hw.web.ApplicationBase;
 
 @EnableResourceServer
 public class Application extends ApplicationBase {
+
+    @Configuration
+    protected static class WebConfiguration extends WebMvcConfigurerAdapter {
+
+        @Override
+        public void addViewControllers(ViewControllerRegistry registry) {
+            registry.addViewController("/").setViewName("home");
+            registry.addViewController(Urls.LOGIN).setViewName("login");
+            registry.addViewController(Urls.OAUTH_CONFIRM_ACCESS).setViewName("oauth-confirm-access");
+            registry.addViewController(Urls.OAUTH_ERROR).setViewName("oauth-error");
+        }
+    }
 
     @Configuration
     protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
@@ -51,25 +65,13 @@ public class Application extends ApplicationBase {
         }
 
         @Bean
-        public UserService userDetailsService() {
-            return new UserServiceImpl(jdbcTemplate);
+        public UserDetailsService userDetailsService() {
+            return new UserDetailsServiceImpl(jdbcTemplate);
         }
 
         @Bean
-        public AuthenticationListener authenticationListener(UserService userService) {
-            return new AuthenticationListener(userService);
-        }
-    }
-
-    @Configuration
-    protected static class WebConfiguration extends WebMvcConfigurerAdapter {
-
-        @Override
-        public void addViewControllers(ViewControllerRegistry registry) {
-            registry.addViewController("/").setViewName("home");
-            registry.addViewController(Urls.LOGIN).setViewName("login");
-            registry.addViewController(Urls.OAUTH_CONFIRM_ACCESS).setViewName("oauth-confirm-access");
-            registry.addViewController(Urls.OAUTH_ERROR).setViewName("oauth-error");
+        public AuditLoginResult authenticationListener() {
+            return new AuditLoginResult(jdbcTemplate);
         }
     }
 
@@ -113,6 +115,7 @@ public class Application extends ApplicationBase {
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints.authenticationManager(authenticationManager);
+            endpoints.tokenStore(tokenStore());
             endpoints.approvalStore(approvalStore());
         }
 
@@ -127,8 +130,13 @@ public class Application extends ApplicationBase {
         }
 
         @Bean
+        public TokenStore tokenStore() {
+            return new TokenServiceImpl(jdbcTemplate);
+        }
+
+        @Bean
         public ApprovalStore approvalStore() {
-            return new ApprovalsServiceImpl(jdbcTemplate);
+            return new ApprovalServiceImpl(jdbcTemplate);
         }
     }
 

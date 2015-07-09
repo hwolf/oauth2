@@ -14,7 +14,7 @@ dependencies {
     runtime "org.jolokia:jolokia-core"
 }
 
-// Find a better way to this
+// Find a better way to do this
 ext {
     COMMIT = System.getenv('SNAP_COMMIT') ? System.getenv('SNAP_COMMIT') : "???"
     BRANCH = System.getenv('SNAP_BRANCH') ? System.getenv('SNAP_BRANCH') : "???"

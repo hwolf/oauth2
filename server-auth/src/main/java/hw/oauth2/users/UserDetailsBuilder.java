@@ -1,8 +1,7 @@
-package hw.oauth2.authentication;
-
-import java.util.Collection;
+package hw.oauth2.users;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -53,13 +52,13 @@ public class UserDetailsBuilder {
         return this;
     }
 
-    public UserDetailsBuilder authorities(GrantedAuthority... authorities) {
-        this.authorities.add(authorities);
+    public UserDetailsBuilder withAuthority(String authority) {
+        authorities.add(new SimpleGrantedAuthority(authority));
         return this;
     }
 
-    public UserDetailsBuilder authorities(Collection<GrantedAuthority> authorities) {
-        this.authorities.addAll(authorities);
+    public UserDetailsBuilder withRole(String role) {
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
         return this;
     }
 

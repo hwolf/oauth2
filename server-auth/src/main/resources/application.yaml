@@ -6,6 +6,11 @@
 spring:
   application:
     name: "OAuth2"
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming-strategy: hw.utils.jpa.hibernate.NamingStrategy
 
 server:
   port: 9999
@@ -35,8 +40,15 @@ endpoints:
 
 spring:
   profiles: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
   thymeleaf:
     cache: false
+
+flyway:
+  enabled: false
 
 ---
 

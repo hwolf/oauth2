@@ -1,13 +1,12 @@
 
-insert into t_clients (client_id, client_secret, web_server_redirect_uri)
-	values ('acme', 'acmesecret', null);
+insert into t_clients (client_id, client_secret, access_token_validity, refresh_token_validity) values ('acme', 'acmesecret', 0, 0);
 
-insert into t_client_authorized_grant_types (client_id, authorized_grant_type) values ('acme', 'authorization_code');
-insert into t_client_authorized_grant_types (client_id, authorized_grant_type) values ('acme', 'refresh_token');
+insert into t_client_entries (client_id, name, data) values ('acme', 'GRANT_TYPE', 'authorization_code');
+insert into t_client_entries (client_id, name, data) values ('acme', 'GRANT_TYPE', 'refresh_token');
 
-insert into t_client_authorities (client_id, authority) values ('acme', 'authority1');
-insert into t_client_authorities (client_id, authority) values ('acme', 'authority2');
+insert into t_client_entries (client_id, name, data) values ('acme', 'AUTHORITY', 'authority1');
+insert into t_client_entries (client_id, name, data) values ('acme', 'AUTHORITY', 'authority2');
 
-insert into t_client_scopes (client_id, scope, approved) values ('acme', 'scope1', false);
-insert into t_client_scopes (client_id, scope, approved) values ('acme', 'scope2', false);
-insert into t_client_scopes (client_id, scope, approved) values ('acme', 'scope3', true);
+insert into t_client_entries (client_id, name, data) values ('acme', 'SCOPE', 'scope1');
+insert into t_client_entries (client_id, name, data) values ('acme', 'SCOPE', 'scope2');
+insert into t_client_entries (client_id, name, data) values ('acme', 'SCOPE', 'scope3');

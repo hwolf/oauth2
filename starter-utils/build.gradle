@@ -1,6 +1,3 @@
 
 dependencies {
-    compile "com.fasterxml.jackson.core:jackson-databind:$V_JACKSON"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$V_JACKSON"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-guava:$V_JACKSON"
 }

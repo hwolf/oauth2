@@ -1,6 +1,7 @@
-package hw.oauth2.authentication;
+package hw.oauth2.clients;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 
@@ -11,12 +12,12 @@ public class ClientDetailsBuilder {
 
     private String clientId;
     private String clientSecret;
-    private String redirectUri;
+    private final ImmutableSet.Builder<String> redirectUris = ImmutableSet.builder();
 
     private final ImmutableSet.Builder<String> authorizedGrantTypes = ImmutableSet.builder();
 
-    private final ImmutableSet.Builder<String> scope = ImmutableSet.builder();
-    private final ImmutableSet.Builder<String> approvedScope = ImmutableSet.builder();
+    private final ImmutableSet.Builder<String> scopes = ImmutableSet.builder();
+    private final ImmutableSet.Builder<String> autoApprovedScopes = ImmutableSet.builder();
 
     private final ImmutableSet.Builder<String> resourceIds = ImmutableSet.builder();
     private final ImmutableSet.Builder<GrantedAuthority> authorities = ImmutableSet.builder();
@@ -38,43 +39,57 @@ public class ClientDetailsBuilder {
         return this;
     }
 
-    public ClientDetailsBuilder redirectUri(String redirectUri) {
-        this.redirectUri = redirectUri;
+    public ClientDetailsBuilder withRedirectUri(String redirectUri) {
+        redirectUris.add(redirectUri);
         return this;
     }
 
-    public ClientDetailsBuilder authorizedGrantTypes(String... authorizedGrantTypes) {
-        this.authorizedGrantTypes.add(authorizedGrantTypes);
+    public ClientDetailsBuilder withAuthorizedGrantTypes(String authorizedGrantType) {
+        authorizedGrantTypes.add(authorizedGrantType);
         return this;
     }
 
-    public ClientDetailsBuilder scopes(String... scopes) {
-        scope.add(scopes);
+    public ClientDetailsBuilder withScope(String scope) {
+        scopes.add(scope);
         return this;
     }
 
-    public ClientDetailsBuilder approvedScopes(String scopes) {
-        approvedScope.add(scopes);
+    public ClientDetailsBuilder withAutoApprovedScopes(String scope) {
+        scopes.add(scope);
+        autoApprovedScopes.add(scope);
         return this;
     }
 
-    public ClientDetailsBuilder authorities(GrantedAuthority... authorities) {
-        this.authorities.add(authorities);
+    public ClientDetailsBuilder withRole(String role) {
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
         return this;
     }
 
-    public ClientDetailsBuilder resourceIds(String... resourceIds) {
-        this.resourceIds.add(resourceIds);
+    public ClientDetailsBuilder withAuthority(String authority) {
+        authorities.add(new SimpleGrantedAuthority(authority));
         return this;
     }
 
-    public ClientDetailsBuilder accessTokenValiditySeconds(Integer accessTokenValiditySeconds) {
-        this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+    public ClientDetailsBuilder withResourceId(String resourceId) {
+        resourceIds.add(resourceId);
+        return this;
+    }
+
+    public ClientDetailsBuilder accessTokenValiditySeconds(int accessTokenValiditySeconds) {
+        if (accessTokenValiditySeconds == 0) {
+            this.accessTokenValiditySeconds = null;
+        } else {
+            this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+        }
         return this;
     }
 
     public ClientDetailsBuilder refreshTokenValiditySeconds(Integer refreshTokenValiditySeconds) {
-        this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
+        if (refreshTokenValiditySeconds == 0) {
+            this.refreshTokenValiditySeconds = null;
+        } else {
+            this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
+        }
         return this;
     }
 
@@ -82,12 +97,12 @@ public class ClientDetailsBuilder {
         BaseClientDetails client = new BaseClientDetails();
         client.setClientId(clientId);
         client.setClientSecret(clientSecret);
-        client.setRegisteredRedirectUri(redirectUri == null ? null : ImmutableSet.of(redirectUri));
+        client.setRegisteredRedirectUri(redirectUris.build());
 
         client.setAuthorizedGrantTypes(authorizedGrantTypes.build());
 
-        client.setScope(scope.build());
-        client.setAutoApproveScopes(approvedScope.build());
+        client.setScope(scopes.build());
+        client.setAutoApproveScopes(autoApprovedScopes.build());
 
         client.setResourceIds(resourceIds.build());
         client.setAuthorities(authorities.build());

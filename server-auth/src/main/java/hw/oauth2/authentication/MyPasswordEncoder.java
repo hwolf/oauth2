@@ -46,11 +46,11 @@ public final class MyPasswordEncoder implements PasswordEncoder {
     }
 
     private String[] splitPassword(String encodedPassword) {
-        int posColon = encodedPassword.indexOf('\t');
-        if (posColon < 0) {
+        int posSeparator = encodedPassword.indexOf(SEPARATOR);
+        if (posSeparator < 0) {
             return new String[] { PLAIN, encodedPassword };
         }
-        return new String[] { encodedPassword.substring(0, posColon), encodedPassword.substring(posColon + 1) };
+        return new String[] { encodedPassword.substring(0, posSeparator), encodedPassword.substring(posSeparator + 1) };
     }
 
     public static class Builder {

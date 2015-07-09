@@ -11,11 +11,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 
-import hw.utils.config.UtilsConfiguration;
 import hw.web.config.LoggingConfiguration;
 
 @SpringBootApplication(exclude = { GroovyTemplateAutoConfiguration.class })
-@Import({ LoggingConfiguration.class, UtilsConfiguration.class })
+@Import({ LoggingConfiguration.class })
 @PropertySource("classpath:starter-web.properties")
 @PropertySource("classpath:build-info.properties")
 public class ApplicationBase {
