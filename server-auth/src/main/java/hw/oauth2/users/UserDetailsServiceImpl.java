@@ -1,6 +1,5 @@
 package hw.oauth2.users;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.context.support.MessageSourceAccessor;
@@ -77,19 +76,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     messages.getMessage("JdbcDaoImpl.notFound", new Object[] { userId }, "Username {0} not found"));
         }
         UserDetailsBuilder user = users.get(0);
-        loadEntries(user.username(), user);
+        loadEntries(user.userId(), user);
         return user.build();
     }
 
     protected List<UserDetailsBuilder> loadUsersByUsername(String username) {
         return jdbcTemplate.query(SQL_LOAD_USERS_BY_USERID, new String[] { username.toLowerCase() }, (rs, rowNum) -> {
             return new UserDetailsBuilder() //
-                    .enabled(true) //
-                    .accountNonExpired(true) //
-                    .username(rs.getString(1)) //
+                    .userId(rs.getString(1)) //
                     .password(rs.getString(2)) //
-                    .credentialsNonExpired(rs.getDate(3).after(new Date())) //
-                    .accountNonLocked(rs.getInt(4) <= 3);
+                    .passwordExpiresAt(rs.getDate(3)) //
+                    .failedLogins(rs.getInt(4));
         });
     }
 

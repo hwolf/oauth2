@@ -1,54 +1,44 @@
 package hw.oauth2.users;
 
+import java.util.Date;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import com.google.common.collect.ImmutableSet;
 
-@SuppressWarnings("hiding")
 public class UserDetailsBuilder {
 
-    private String username;
-    private boolean enabled;
-    private boolean accountNonExpired;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
+    private String userId;
     private String password;
+    private Date passwordExpiresAt;
+    private int failedLogins;
     private final ImmutableSet.Builder<GrantedAuthority> authorities = ImmutableSet.builder();
 
-    public String username() {
-        return username;
+    public String userId() {
+        return userId;
     }
 
-    public UserDetailsBuilder username(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public UserDetailsBuilder enabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
-    }
-
-    public UserDetailsBuilder accountNonExpired(boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
-        return this;
-    }
-
-    public UserDetailsBuilder accountNonLocked(boolean accountNonLocked) {
-        this.accountNonLocked = accountNonLocked;
-        return this;
-    }
-
-    public UserDetailsBuilder credentialsNonExpired(boolean credentialsNonExpired) {
-        this.credentialsNonExpired = credentialsNonExpired;
+    public UserDetailsBuilder userId(String userId) {
+        this.userId = userId;
         return this;
     }
 
     public UserDetailsBuilder password(String password) {
         this.password = password;
+        return this;
+    }
+
+    public UserDetailsBuilder passwordExpiresAt(Date passwordExpiresAt) {
+        this.passwordExpiresAt = passwordExpiresAt;
+        return this;
+    }
+
+    public UserDetailsBuilder failedLogins(int failedLogins) {
+        this.failedLogins = failedLogins;
         return this;
     }
 
@@ -63,7 +53,15 @@ public class UserDetailsBuilder {
     }
 
     public UserDetails build() {
-        return new User(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked,
+        return new User(userId, password, StringUtils.hasText(password), true, !isPasswordExpired(), !isAccountLocked(),
                 authorities.build());
+    }
+
+    protected boolean isPasswordExpired() {
+        return passwordExpiresAt == null || !passwordExpiresAt.after(new Date());
+    }
+
+    private boolean isAccountLocked() {
+        return failedLogins > 3;
     }
 }

@@ -37,11 +37,11 @@ spring:
   profiles: dev
   thymeleaf:
     cache: false
-  datasource:
-    driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/dev1_hwoauth2
-    username: dev1
-    password: dev1
+#  datasource:
+#    driverClassName: org.mariadb.jdbc.Driver
+#    url: jdbc:mysql://localhost/dev1_hwoauth2
+#    username: dev1
+#    password: dev1
 
 ---
 

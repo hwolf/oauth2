@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 
 import com.google.common.collect.ImmutableSet;
 
-@SuppressWarnings("hiding")
 public class ClientDetailsBuilder {
 
     private String clientId;

@@ -28,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import hw.oauth2.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.MyPasswordEncoder;
 import hw.oauth2.clients.ClientServiceImpl;
+import hw.oauth2.services.UserAdministrationService;
 import hw.oauth2.tokens.TokenServiceImpl;
 import hw.oauth2.users.AuditLoginResult;
 import hw.oauth2.users.UserDetailsServiceImpl;
@@ -35,6 +36,14 @@ import hw.web.ApplicationBase;
 
 @EnableResourceServer
 public class Application extends ApplicationBase {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Bean
+    public UserAdministrationService userAdministrationService() {
+        return new UserAdministrationService(jdbcTemplate);
+    }
 
     @Configuration
     protected static class WebConfiguration extends WebMvcConfigurerAdapter {

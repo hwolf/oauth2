@@ -232,8 +232,7 @@ public class TokenServiceImpl implements TokenStore {
 
     @Override
     public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
-        List<OAuth2AccessToken> accessTokens = new ArrayList<OAuth2AccessToken>();
-
+        List<OAuth2AccessToken> accessTokens = new ArrayList<>();
         try {
             accessTokens = jdbcTemplate.query(TokenServiceSqls.SQL_SELECT_DEFAULT_TOKENS_FROM_USERNAME_AND_CLIENT,
                     new SafeAccessTokenRowMapper(), userName, clientId);
@@ -246,7 +245,7 @@ public class TokenServiceImpl implements TokenStore {
     }
 
     private List<OAuth2AccessToken> removeNulls(List<OAuth2AccessToken> accessTokens) {
-        List<OAuth2AccessToken> tokens = new ArrayList<OAuth2AccessToken>();
+        List<OAuth2AccessToken> tokens = new ArrayList<>();
         for (OAuth2AccessToken token : accessTokens) {
             if (token != null) {
                 tokens.add(token);

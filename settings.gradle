@@ -1,3 +1,4 @@
+include ':api-oauth'
 include ':starter-web'
 include ':starter-utils'
 include ':starter-testutils'
