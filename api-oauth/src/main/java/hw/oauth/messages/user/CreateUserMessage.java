@@ -65,7 +65,7 @@ public class CreateUserMessage implements UserMessage {
             return this;
         }
 
-        public Builder witAuthority(String authority) {
+        public Builder withAuthority(String authority) {
             authorities.add(authority);
             return this;
         }
