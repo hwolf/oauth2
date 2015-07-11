@@ -1,4 +1,4 @@
-package hw.oauth2.clients;
+package hw.oauth2.authentication.clients;
 
 import java.util.List;
 

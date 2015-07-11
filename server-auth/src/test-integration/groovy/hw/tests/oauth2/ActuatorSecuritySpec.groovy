@@ -4,7 +4,7 @@ import geb.spock.GebSpec
 import hw.oauth.messages.user.CreateUserMessage
 import hw.oauth.messages.user.DeleteUserMessage
 import hw.oauth2.Application
-import hw.oauth2.services.UserAdministrationService
+import hw.oauth2.services.admin.UserAdministrationService
 import hw.tests.oauth2.pages.LoginPage
 
 import org.junit.Before
@@ -31,7 +31,8 @@ class ActuatorSecuritySpec extends GebSpec {
     @Autowired
     UserAdministrationService adminService
 
-    def setup() {
+    @Before
+    void setupUrl() {
         browser.baseUrl = "http://localhost:${serverPort}/uaa/"
     }
 

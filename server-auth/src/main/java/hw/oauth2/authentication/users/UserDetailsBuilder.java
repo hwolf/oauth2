@@ -1,4 +1,4 @@
-package hw.oauth2.users;
+package hw.oauth2.authentication.users;
 
 import java.util.Date;
 

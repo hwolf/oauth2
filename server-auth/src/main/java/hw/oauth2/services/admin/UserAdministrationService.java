@@ -1,4 +1,4 @@
-package hw.oauth2.services;
+package hw.oauth2.services.admin;
 
 import java.sql.Timestamp;
 import java.util.Set;

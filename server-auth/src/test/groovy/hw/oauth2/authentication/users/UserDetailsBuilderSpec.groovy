@@ -1,10 +1,11 @@
-package hw.oauth2.users
+package hw.oauth2.authentication.users
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 import org.springframework.security.core.userdetails.UserDetails
 
+import hw.oauth2.authentication.users.UserDetailsBuilder;
 import spock.lang.Specification
 
 class UserDetailsBuilderSpec extends Specification {

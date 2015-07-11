@@ -1,7 +1,8 @@
-package hw.oauth2.clients
+package hw.oauth2.authentication.clients
 
 import org.springframework.security.oauth2.provider.ClientDetails
 
+import hw.oauth2.authentication.clients.ClientDetailsBuilder;
 import spock.lang.Specification
 
 class ClientDetailsBuilderSpec extends Specification {

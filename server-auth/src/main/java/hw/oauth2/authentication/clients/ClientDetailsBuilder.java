@@ -1,4 +1,4 @@
-package hw.oauth2.clients;
+package hw.oauth2.authentication.clients;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

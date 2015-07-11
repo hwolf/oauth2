@@ -1,4 +1,4 @@
-package hw.oauth2.tokens;
+package hw.oauth2.authentication.tokens;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -23,7 +23,7 @@ import org.springframework.security.oauth2.provider.token.AuthenticationKeyGener
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import hw.oauth2.security.MessageDigestUtils;
+import hw.oauth2.utils.MessageDigestUtils;
 
 public class TokenServiceImpl implements TokenStore {
 

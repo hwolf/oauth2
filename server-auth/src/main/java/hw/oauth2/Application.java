@@ -26,12 +26,12 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import hw.oauth.password.MyPasswordEncoder;
-import hw.oauth2.approvals.ApprovalServiceImpl;
-import hw.oauth2.clients.ClientServiceImpl;
-import hw.oauth2.services.UserAdministrationService;
-import hw.oauth2.tokens.TokenServiceImpl;
-import hw.oauth2.users.AuditLoginResult;
-import hw.oauth2.users.UserDetailsServiceImpl;
+import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
+import hw.oauth2.authentication.clients.ClientServiceImpl;
+import hw.oauth2.authentication.tokens.TokenServiceImpl;
+import hw.oauth2.authentication.users.AuditLoginResult;
+import hw.oauth2.authentication.users.UserDetailsServiceImpl;
+import hw.oauth2.services.admin.UserAdministrationService;
 import hw.web.ApplicationBase;
 
 @EnableResourceServer

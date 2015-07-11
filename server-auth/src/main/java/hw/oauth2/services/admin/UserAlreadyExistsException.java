@@ -1,4 +1,4 @@
-package hw.oauth2.services;
+package hw.oauth2.services.admin;
 
 public class UserAlreadyExistsException extends RuntimeException {
 

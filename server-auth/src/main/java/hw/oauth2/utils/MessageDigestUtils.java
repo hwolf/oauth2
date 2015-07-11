@@ -1,4 +1,4 @@
-package hw.oauth2.security;
+package hw.oauth2.utils;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

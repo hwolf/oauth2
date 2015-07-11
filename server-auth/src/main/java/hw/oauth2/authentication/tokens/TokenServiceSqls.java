@@ -1,4 +1,4 @@
-package hw.oauth2.tokens;
+package hw.oauth2.authentication.tokens;
 
 class TokenServiceSqls {
 

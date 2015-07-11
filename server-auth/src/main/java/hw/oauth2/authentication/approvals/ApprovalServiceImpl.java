@@ -1,4 +1,4 @@
-package hw.oauth2.approvals;
+package hw.oauth2.authentication.approvals;
 
 import java.sql.Timestamp;
 import java.util.Collection;
