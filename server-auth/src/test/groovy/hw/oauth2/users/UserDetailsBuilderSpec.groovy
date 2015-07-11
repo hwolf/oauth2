@@ -129,7 +129,9 @@ class UserDetailsBuilderSpec extends Specification {
         UserDetails user = userDetailsBuilder().withRole(role1).withRole(role2).build()
 
         then:
-        user.authorities.authority*.replace("ROLE_", "") as Set == [role1, role2] as Set
+        user.authorities.authority as Set == [
+            "ROLE_" + role1,
+            "ROLE_" + role2] as Set
     }
 
     private UserDetailsBuilder userDetailsBuilder() {
