@@ -8,7 +8,7 @@ import hw.web.logging.ExceptionLoggerAdvice;
 import hw.web.logging.LoggingFilter;
 
 @Configuration
-public class LoggingConfiguration {
+public class LoggingAutoConfiguration {
 
     @Bean
     public ExceptionLoggerAdvice exceptionLoggerAdvice() {
