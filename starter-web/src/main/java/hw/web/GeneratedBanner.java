@@ -64,6 +64,8 @@ public class GeneratedBanner implements Banner {
     }
 
     private String getSpringBootVersion() {
+        // With Spring Boot 1.3 change to:
+        // return SpringBootVersion.getVersion()
         return Banner.class.getPackage().getImplementationVersion();
     }
 
