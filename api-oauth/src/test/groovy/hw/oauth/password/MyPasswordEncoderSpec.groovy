@@ -1,8 +1,9 @@
-package hw.oauth2.authentication
+package hw.oauth.password
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
+import hw.oauth.password.MyPasswordEncoder;
 import spock.lang.Specification
 
 class MyPasswordEncoderSpec extends Specification {
