@@ -53,11 +53,24 @@ public class UserDetailsBuilder {
     }
 
     public UserDetails build() {
-        return new User(userId, password, StringUtils.hasText(password), true, !isPasswordExpired(), !isAccountLocked(),
+        return new User(userId, getPassword(), isAccountEnabled(), true, !isPasswordExpired(), !isAccountLocked(),
                 authorities.build());
     }
 
-    protected boolean isPasswordExpired() {
+    private String getPassword() {
+        if (!StringUtils.hasText(password)) {
+            // if there is no password, account is disabled, but the class
+            // org.springframework.security.core.userdetails.User needs a password.
+            return "<no password>";
+        }
+        return password;
+    }
+
+    private boolean isAccountEnabled() {
+        return StringUtils.hasText(password);
+    }
+
+    private boolean isPasswordExpired() {
         return passwordExpiresAt == null || !passwordExpiresAt.after(new Date());
     }
 
