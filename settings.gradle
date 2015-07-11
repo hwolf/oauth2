@@ -5,3 +5,13 @@ include ':starter-testutils'
 include ':server-auth'
 include ':server-example-resource'
 include ':server-example-ui'
+
+rootProject.name = 'oauth2'
+
+// Idea from https://github.com/gradle/gradle/blob/master/settings.gradle
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+    
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}
