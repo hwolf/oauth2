@@ -43,7 +43,7 @@ public class ClientDetailsBuilder {
         return this;
     }
 
-    public ClientDetailsBuilder withAuthorizedGrantTypes(String authorizedGrantType) {
+    public ClientDetailsBuilder withAuthorizedGrantType(String authorizedGrantType) {
         authorizedGrantTypes.add(authorizedGrantType);
         return this;
     }
@@ -53,7 +53,7 @@ public class ClientDetailsBuilder {
         return this;
     }
 
-    public ClientDetailsBuilder withAutoApprovedScopes(String scope) {
+    public ClientDetailsBuilder withAutoApprovedScope(String scope) {
         scopes.add(scope);
         autoApprovedScopes.add(scope);
         return this;

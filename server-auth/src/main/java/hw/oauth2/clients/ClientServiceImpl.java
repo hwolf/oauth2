@@ -35,7 +35,7 @@ public class ClientServiceImpl implements ClientDetailsService {
 
             @Override
             void setValue(String value, ClientDetailsBuilder user) {
-                user.withAuthorizedGrantTypes(value);
+                user.withAuthorizedGrantType(value);
             }
         },
 
@@ -75,7 +75,7 @@ public class ClientServiceImpl implements ClientDetailsService {
 
             @Override
             void setValue(String value, ClientDetailsBuilder user) {
-                user.withAuthorizedGrantTypes(value);
+                user.withAuthorizedGrantType(value);
             }
         },
 
