@@ -74,21 +74,13 @@ public class ClientDetailsBuilder {
         return this;
     }
 
-    public ClientDetailsBuilder accessTokenValiditySeconds(int accessTokenValiditySeconds) {
-        if (accessTokenValiditySeconds == 0) {
-            this.accessTokenValiditySeconds = null;
-        } else {
-            this.accessTokenValiditySeconds = accessTokenValiditySeconds;
-        }
+    public ClientDetailsBuilder accessTokenValiditySeconds(Integer accessTokenValiditySeconds) {
+        this.accessTokenValiditySeconds = accessTokenValiditySeconds;
         return this;
     }
 
     public ClientDetailsBuilder refreshTokenValiditySeconds(Integer refreshTokenValiditySeconds) {
-        if (refreshTokenValiditySeconds == 0) {
-            this.refreshTokenValiditySeconds = null;
-        } else {
-            this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
-        }
+        this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
         return this;
     }
 

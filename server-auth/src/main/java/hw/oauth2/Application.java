@@ -29,8 +29,14 @@ import hw.oauth.password.MyPasswordEncoder;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
 import hw.oauth2.authentication.tokens.TokenServiceImpl;
-import hw.oauth2.authentication.users.AuditLoginResult;
+import hw.oauth2.authentication.users.UpdateLoginStatus;
 import hw.oauth2.authentication.users.UserDetailsServiceImpl;
+import hw.oauth2.entities.AccessTokenRepository;
+import hw.oauth2.entities.ApprovalRepository;
+import hw.oauth2.entities.ClientRepository;
+import hw.oauth2.entities.LoginStatusRepository;
+import hw.oauth2.entities.RefreshTokenRepository;
+import hw.oauth2.entities.UserRepository;
 import hw.oauth2.services.admin.UserAdministrationService;
 import hw.web.ApplicationBase;
 
@@ -60,8 +66,14 @@ public class Application extends ApplicationBase {
     @Configuration
     protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
+        // @Autowired
+        // private JdbcTemplate jdbcTemplate;
+
         @Autowired
-        private JdbcTemplate jdbcTemplate;
+        private UserRepository userRepository;
+
+        @Autowired
+        private LoginStatusRepository loginStatusRepository;
 
         @Override
         public void init(AuthenticationManagerBuilder auth) throws Exception {
@@ -75,12 +87,12 @@ public class Application extends ApplicationBase {
 
         @Bean
         public UserDetailsService userDetailsService() {
-            return new UserDetailsServiceImpl(jdbcTemplate);
+            return new UserDetailsServiceImpl(userRepository);
         }
 
         @Bean
-        public AuditLoginResult authenticationListener() {
-            return new AuditLoginResult(jdbcTemplate);
+        public UpdateLoginStatus authenticationListener() {
+            return new UpdateLoginStatus(loginStatusRepository);
         }
     }
 
@@ -116,7 +128,16 @@ public class Application extends ApplicationBase {
     protected static class OAuth2Configuration extends AuthorizationServerConfigurerAdapter {
 
         @Autowired
-        private JdbcTemplate jdbcTemplate;
+        private ClientRepository clientRepository;
+
+        @Autowired
+        private ApprovalRepository approvalRepository;
+
+        @Autowired
+        private AccessTokenRepository accessTokenRepository;
+
+        @Autowired
+        private RefreshTokenRepository refreshTokenRepository;
 
         @Autowired
         private AuthenticationManager authenticationManager;
@@ -135,17 +156,17 @@ public class Application extends ApplicationBase {
 
         @Bean
         public ClientDetailsService clientDetailsService() {
-            return new ClientServiceImpl(jdbcTemplate);
+            return new ClientServiceImpl(clientRepository);
         }
 
         @Bean
         public TokenStore tokenStore() {
-            return new TokenServiceImpl(jdbcTemplate);
+            return new TokenServiceImpl(accessTokenRepository, refreshTokenRepository);
         }
 
         @Bean
         public ApprovalStore approvalStore() {
-            return new ApprovalServiceImpl(jdbcTemplate);
+            return new ApprovalServiceImpl(approvalRepository);
         }
     }
 

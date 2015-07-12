@@ -2,7 +2,6 @@ package hw.oauth2.authentication.clients
 
 import org.springframework.security.oauth2.provider.ClientDetails
 
-import hw.oauth2.authentication.clients.ClientDetailsBuilder;
 import spock.lang.Specification
 
 class ClientDetailsBuilderSpec extends Specification {
@@ -152,17 +151,6 @@ class ClientDetailsBuilderSpec extends Specification {
         client.accessTokenValiditySeconds == accessTokenValiditySeconds
     }
 
-    def "set access token validity seconds to 0"() {
-        given:
-        int accessTokenValiditySeconds = 0
-
-        when:
-        ClientDetails client = clientDetailsBuilder().accessTokenValiditySeconds(accessTokenValiditySeconds).build()
-
-        then:
-        client.accessTokenValiditySeconds == null
-    }
-
     def "set refresh token validity seconds"() {
         given:
         int refreshTokenValiditySeconds = 23
@@ -172,17 +160,6 @@ class ClientDetailsBuilderSpec extends Specification {
 
         then:
         client.refreshTokenValiditySeconds == refreshTokenValiditySeconds
-    }
-
-    def "set refresh token validity seconds to 0"() {
-        given:
-        int refreshTokenValiditySeconds = 0
-
-        when:
-        ClientDetails client = clientDetailsBuilder().refreshTokenValiditySeconds(refreshTokenValiditySeconds).build()
-
-        then:
-        client.refreshTokenValiditySeconds == null
     }
 
     private ClientDetailsBuilder clientDetailsBuilder() {

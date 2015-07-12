@@ -1,5 +1,6 @@
 package hw.oauth2.authentication.users;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -32,8 +33,12 @@ public class UserDetailsBuilder {
         return this;
     }
 
-    public UserDetailsBuilder passwordExpiresAt(Date passwordExpiresAt) {
-        this.passwordExpiresAt = passwordExpiresAt;
+    public UserDetailsBuilder passwordExpiresAt(Instant passwordExpiresAt) {
+        if (passwordExpiresAt == null) {
+            this.passwordExpiresAt = null;
+        } else {
+            this.passwordExpiresAt = Date.from(passwordExpiresAt);
+        }
         return this;
     }
 

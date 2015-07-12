@@ -1,6 +1,7 @@
 package hw.oauth2.services.admin;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -9,7 +10,7 @@ import hw.oauth.messages.user.CreateUserMessage;
 final class InsertUser {
 
     private static final String SQL_INSERT_USER = "insert into "
-            + "t_users (user_id, password, password_expired) values (?, ?, ?)";
+            + "t_users (user_id, password, password_expires_at) values (?, ?, ?)";
 
     private static final String SQL_INSERT_ENTRY = "insert into "
             + "t_user_entries (user_id, name, data) values (?, ?, ?)";
@@ -25,9 +26,9 @@ final class InsertUser {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    InsertUser insertUser() {
+    InsertUser insertUser(Instant passwordExpiresAt) {
         jdbcTemplate.update(SQL_INSERT_USER, message.getUserId(), message.getPassword(),
-                Timestamp.from(message.getPasswordExpiresAt()));
+                Timestamp.from(passwordExpiresAt));
         return this;
     }
 

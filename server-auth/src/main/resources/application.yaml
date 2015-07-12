@@ -37,6 +37,13 @@ spring:
   profiles: dev
   thymeleaf:
     cache: false
+  jpa:
+    show-sql: true
+#    hibernate:
+#       ddl-auto: create-drop
+#flyway:
+#  enabled: false
+
 #  datasource:
 #    driverClassName: org.mariadb.jdbc.Driver
 #    url: jdbc:mysql://localhost/dev1_hwoauth2

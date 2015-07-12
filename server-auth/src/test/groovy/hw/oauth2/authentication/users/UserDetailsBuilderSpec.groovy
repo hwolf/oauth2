@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit
 
 import org.springframework.security.core.userdetails.UserDetails
 
-import hw.oauth2.authentication.users.UserDetailsBuilder;
 import spock.lang.Specification
 
 class UserDetailsBuilderSpec extends Specification {
@@ -34,7 +33,7 @@ class UserDetailsBuilderSpec extends Specification {
 
     def "when the password expires date is in the future, then the credentials are not expired"() {
         given:
-        Date passwordExpiresAt = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES))
+        Instant passwordExpiresAt = Instant.now().plus(1, ChronoUnit.MINUTES)
 
         when:
         UserDetails user = userDetailsBuilder().passwordExpiresAt(passwordExpiresAt).build()
@@ -45,7 +44,7 @@ class UserDetailsBuilderSpec extends Specification {
 
     def "when the password expires date is in the past, then the credentials are expired"() {
         given:
-        Date passwordExpiresAt = Date.from(Instant.now())
+        Instant passwordExpiresAt = Instant.now()
 
         when:
         UserDetails user = userDetailsBuilder().passwordExpiresAt(passwordExpiresAt).build()
@@ -56,7 +55,7 @@ class UserDetailsBuilderSpec extends Specification {
 
     def "when no password expires date is given, then the credentials are expired"() {
         given:
-        Date passwordExpiresAt = null
+        Instant passwordExpiresAt = null
 
         when:
         UserDetails user = userDetailsBuilder().passwordExpiresAt(passwordExpiresAt).build()

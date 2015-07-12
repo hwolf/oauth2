@@ -1,38 +1,20 @@
 package hw.oauth2.authentication.users;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import hw.oauth2.entities.Entry;
+import hw.oauth2.entities.User;
+import hw.oauth2.entities.UserRepository;
+
 @Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private static final String SQL_LOAD_USERS_BY_USERID = "select " //
-            + "    u.user_id, " //
-            + "    u.password, " //
-            + "    u.password_expired, " //
-            + "    s.failed_login_attempts " //
-            + "from " //
-            + "    t_users u " //
-            + "        join t_login_status s on s.user_id = u.user_id " //
-            + "where " //
-            + "    u.user_id = ?";
-
-    private static final String SQL_LOAD_ENTRIES_BY_USERID = "select " //
-            + "    name, " //
-            + "    data " //
-            + "from " //
-            + "    t_user_entries " //
-            + "where " //
-            + "    user_id = ?";
-
-    private enum EntryType {
+    private enum EntryMappers {
         ROLE {
 
             @Override
@@ -60,49 +42,36 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         abstract void setValue(String value, UserDetailsBuilder user);
     }
 
-    private final JdbcTemplate jdbcTemplate;
-    private final MessageSourceAccessor messages;
+    private final UserRepository userRepository;
 
-    public UserDetailsServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        messages = SpringSecurityMessageSource.getAccessor();
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        List<UserDetailsBuilder> users = loadUsersByUsername(userId);
-        if (users.isEmpty()) {
-            throw new UsernameNotFoundException(
-                    messages.getMessage("JdbcDaoImpl.notFound", new Object[] { userId }, "Username {0} not found"));
+        User user = userRepository.findOne(userId.toLowerCase());
+        if (user == null) {
+            throw new UsernameNotFoundException("User " + userId + " not found");
         }
-        UserDetailsBuilder user = users.get(0);
-        loadEntries(user.userId(), user);
-        return user.build();
+        UserDetailsBuilder builder = new UserDetailsBuilder() //
+                .userId(user.getUserId()) //
+                .password(user.getPassword()) //
+                .passwordExpiresAt(user.getPasswordExpiresAt()) //
+                .failedLogins(user.getLoginStatus().getFailedLoginAttempts());
+        user.getEntries().stream().forEach(mapEntry(builder));
+        return builder.build();
     }
 
-    protected List<UserDetailsBuilder> loadUsersByUsername(String username) {
-        return jdbcTemplate.query(SQL_LOAD_USERS_BY_USERID, new String[] { username.toLowerCase() }, (rs, rowNum) -> {
-            return new UserDetailsBuilder() //
-                    .userId(rs.getString(1)) //
-                    .password(rs.getString(2)) //
-                    .passwordExpiresAt(rs.getDate(3)) //
-                    .failedLogins(rs.getInt(4));
-        });
+    private Consumer<? super Entry> mapEntry(UserDetailsBuilder builder) {
+        return entry -> findMapper(entry.getName()).setValue(entry.getData(), builder);
     }
 
-    protected void loadEntries(String userId, UserDetailsBuilder user) {
-        jdbcTemplate.query(SQL_LOAD_ENTRIES_BY_USERID, new String[] { userId }, rs -> {
-            String name = rs.getString(1);
-            String data = rs.getString(2);
-            findEntry(name).setValue(data, user);
-        });
-    }
-
-    private EntryType findEntry(String name) {
+    private EntryMappers findMapper(String name) {
         try {
-            return EntryType.valueOf(name);
+            return EntryMappers.valueOf(name);
         } catch (IllegalArgumentException ex) {
-            return EntryType.IGNORE;
+            return EntryMappers.IGNORE;
         }
     }
 }
