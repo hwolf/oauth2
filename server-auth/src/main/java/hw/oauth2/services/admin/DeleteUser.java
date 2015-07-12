@@ -22,8 +22,8 @@ final class DeleteUser {
 
     void deleteUser() {
         String userId = message.getUserId();
-        jdbcTemplate.update(SQL_DELETE_LOGIN_STATUS, userId);
         jdbcTemplate.update(SQL_DELETE_ENTRIES, userId);
         jdbcTemplate.update(SQL_DELETE_USER, userId);
+        jdbcTemplate.update(SQL_DELETE_LOGIN_STATUS, userId);
     }
 }

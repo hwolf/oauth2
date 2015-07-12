@@ -25,7 +25,7 @@ public class UserAdministrationService {
     public void createUser(CreateUserMessage message) {
         Instant passwordExpiresAt = mapLocalDate(LocalDate.now());
         try {
-            new InsertUser(message, jdbcTemplate).insertUser(passwordExpiresAt).insertAuthorities().insertStatusLogin();
+            new InsertUser(message, jdbcTemplate).insertStatusLogin().insertUser(passwordExpiresAt).insertAuthorities();
         } catch (DuplicateKeyException ex) {
             throw new UserAlreadyExistsException("User " + message.getUserId() + " already exists", ex);
         }
