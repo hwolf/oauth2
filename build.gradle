@@ -79,6 +79,9 @@ configure(javaProjects) {
     }
 
     test {
+        testLogging {
+            exceptionFormat "full"
+        }
         reports {
             html.enabled = false
             junitXml.destination = file("${buildDir}/test-results/${name}")
@@ -88,6 +91,9 @@ configure(javaProjects) {
     }
     
     integrationTest {
+        testLogging {
+            exceptionFormat "full"
+        }
         reports {
             html.enabled = false
             junitXml.enabled = false
