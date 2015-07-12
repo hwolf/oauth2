@@ -10,7 +10,7 @@ create table t_login_status (
 create table t_users (
 	user_id varchar(20) not null, 
 	password varchar(500) not null, 
-	password_expires_at timestamp, 
+	password_expires_at timestamp not null, 
 	primary key (user_id)
 );
 

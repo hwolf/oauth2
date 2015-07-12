@@ -10,7 +10,6 @@ test {
     systemProperty 'SPRING_DATASOURCE_DRIVERCLASSNAME', System.properties['SPRING_DATASOURCE_DRIVERCLASSNAME']
 }
 
-
 dependencies {
     compile project(":api-oauth")
     compile project(":starter-web")

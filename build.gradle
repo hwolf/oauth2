@@ -92,7 +92,6 @@ configure(javaProjects) {
     integrationTest {
         testLogging {
             exceptionFormat "full"
-            showStandardStreams true
         }
         reports {
             html.enabled = false
