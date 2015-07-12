@@ -1,7 +1,5 @@
 package hw.oauth.messages.user;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -12,8 +10,6 @@ public class CreateUserMessage implements UserMessage {
 
     private final String userId;
     private final String password;
-    private final Instant passwordExpiresAt;
-
     private final Set<String> authorities;
 
     public static Builder builder(String userId) {
@@ -23,7 +19,6 @@ public class CreateUserMessage implements UserMessage {
     private CreateUserMessage(Builder builder) {
         userId = builder.userId;
         password = builder.password;
-        passwordExpiresAt = builder.passwordExpiresAt;
         authorities = builder.authorities.build();
     }
 
@@ -36,10 +31,6 @@ public class CreateUserMessage implements UserMessage {
         return password;
     }
 
-    public Instant getPasswordExpiresAt() {
-        return passwordExpiresAt;
-    }
-
     public Set<String> getAuthorities() {
         return authorities;
     }
@@ -48,7 +39,6 @@ public class CreateUserMessage implements UserMessage {
 
         private final String userId;
         private String password;
-        private Instant passwordExpiresAt;
         private final ImmutableSet.Builder<String> authorities = ImmutableSet.builder();
 
         public Builder(String userId) {
@@ -57,11 +47,6 @@ public class CreateUserMessage implements UserMessage {
 
         public Builder password(String password) {
             this.password = password;
-            return this;
-        }
-
-        public Builder passwordExpiresAt(Instant passwordExpiresAt) {
-            this.passwordExpiresAt = passwordExpiresAt;
             return this;
         }
 
@@ -88,9 +73,6 @@ public class CreateUserMessage implements UserMessage {
         }
 
         public CreateUserMessage build() {
-            if (passwordExpiresAt == null) {
-                passwordExpiresAt = Instant.now().plus(14, ChronoUnit.DAYS);
-            }
             return new CreateUserMessage(this);
         }
     }

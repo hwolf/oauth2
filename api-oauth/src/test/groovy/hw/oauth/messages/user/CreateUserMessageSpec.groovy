@@ -1,8 +1,5 @@
 package hw.oauth.messages.user
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-
 import spock.lang.Specification
 
 class CreateUserMessageSpec extends Specification {
@@ -20,25 +17,6 @@ class CreateUserMessageSpec extends Specification {
         then:
         msg.userId == userId
         msg.password == password
-    }
-
-    def "set password expires"() {
-        given:
-        Instant expiresAt = Instant.now().plus(35, ChronoUnit.HOURS)
-
-        when:
-        CreateUserMessage msg = CreateUserMessage.builder("x12133").passwordExpiresAt(expiresAt).build()
-
-        then:
-        msg.passwordExpiresAt == expiresAt
-    }
-
-    def "not set password expires"() {
-        when:
-        CreateUserMessage msg = CreateUserMessage.builder("d343434").build()
-
-        then:
-        msg.passwordExpiresAt > Instant.now()
     }
 
     def "set authorities"() {
