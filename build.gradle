@@ -42,7 +42,6 @@ configure(javaProjects) {
     ext {
         V_GUAVA = '18.0'
         V_GROOVY = '2.3.11'
-        //V_JACKSON = '2.4.5'
     }
 
     sourceCompatibility = 1.8
@@ -93,6 +92,7 @@ configure(javaProjects) {
     integrationTest {
         testLogging {
             exceptionFormat "full"
+            showStandardStreams true
         }
         reports {
             html.enabled = false
