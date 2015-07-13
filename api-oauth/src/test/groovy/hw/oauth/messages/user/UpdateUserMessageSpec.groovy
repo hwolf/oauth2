@@ -52,9 +52,9 @@ class UpdateUserMessageSpec extends Specification {
         msg.visitChanges(visitor)
 
         then:
-        1 * visitor.visitRole(UpdateAction.ADD, role1)
-        1 * visitor.visitRole(UpdateAction.REMOVE, role2)
-        1 * visitor.visitRole(UpdateAction.REMOVE, role3)
+        1 * visitor.visitAuthority(UpdateAction.ADD, "ROLE_" + role1)
+        1 * visitor.visitAuthority(UpdateAction.REMOVE, "ROLE_" + role2)
+        1 * visitor.visitAuthority(UpdateAction.REMOVE, "ROLE_" + role3)
         0 * _
     }
 }

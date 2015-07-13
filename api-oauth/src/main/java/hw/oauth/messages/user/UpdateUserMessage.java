@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 import hw.oauth.messages.UpdateAction;
 import hw.oauth.messages.UserMessage;
 import hw.oauth.messages.user.changes.AuthorityUpdate;
-import hw.oauth.messages.user.changes.RoleUpdate;
 
 public class UpdateUserMessage implements UserMessage {
 
@@ -56,13 +55,11 @@ public class UpdateUserMessage implements UserMessage {
         }
 
         public Builder addRole(String role) {
-            updates.add(new RoleUpdate(UpdateAction.ADD, role));
-            return this;
+            return addAuthority("ROLE_" + role);
         }
 
         public Builder removeRole(String role) {
-            updates.add(new RoleUpdate(UpdateAction.REMOVE, role));
-            return this;
+            return removeAuthority("ROLE_" + role);
         }
 
         public UpdateUserMessage build() {
