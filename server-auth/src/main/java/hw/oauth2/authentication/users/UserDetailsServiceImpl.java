@@ -50,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        User user = userRepository.findOne(userId.toLowerCase());
+        User user = userRepository.findByUserId(userId.toLowerCase());
         if (user == null) {
             throw new UsernameNotFoundException("User " + userId + " not found");
         }

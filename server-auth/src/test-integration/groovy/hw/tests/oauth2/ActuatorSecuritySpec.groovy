@@ -1,9 +1,6 @@
 package hw.tests.oauth2
 
 import geb.spock.GebSpec
-import hw.oauth.messages.user.ChangePasswordMessage
-import hw.oauth.messages.user.CreateUserMessage
-import hw.oauth.messages.user.DeleteUserMessage
 import hw.oauth2.Application
 import hw.oauth2.services.admin.UserAdministrationService
 import hw.tests.oauth2.pages.LoginPage
@@ -39,10 +36,9 @@ class ActuatorSecuritySpec extends GebSpec {
 
     @Before
     void setupUser() {
-        String initialPwd = "initial"
-        adminService.deleteUser(DeleteUserMessage.builder(USER_ID).build())
-        adminService.createUser(CreateUserMessage.builder(USER_ID).password(initialPwd).withRole(ROLE_ADMIN).build())
-        adminService.changePassword(ChangePasswordMessage.builder(USER_ID).oldPassword(initialPwd).newPassword(PASSWORD).build())
+        UserHelper helper = new UserHelper(adminService)
+        helper.deleteUser(USER_ID)
+        helper.createUser(USER_ID, PASSWORD, ROLE_ADMIN)
     }
 
     @Unroll

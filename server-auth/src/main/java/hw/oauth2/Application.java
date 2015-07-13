@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
@@ -44,11 +43,16 @@ import hw.web.ApplicationBase;
 public class Application extends ApplicationBase {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private UserRepository userRepository;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return MyPasswordEncoder.builder().defaultEncoder("bcrypt-1", new BCryptPasswordEncoder(10)).build();
+    }
 
     @Bean
     public UserAdministrationService userAdministrationService() {
-        return new UserAdministrationService(jdbcTemplate);
+        return new UserAdministrationService(passwordEncoder(), userRepository);
     }
 
     @Configuration
@@ -66,23 +70,18 @@ public class Application extends ApplicationBase {
     @Configuration
     protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
-        // @Autowired
-        // private JdbcTemplate jdbcTemplate;
-
         @Autowired
         private UserRepository userRepository;
 
         @Autowired
         private LoginStatusRepository loginStatusRepository;
 
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+
         @Override
         public void init(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-        }
-
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return MyPasswordEncoder.builder().defaultEncoder("bcrypt-1", new BCryptPasswordEncoder(10)).build();
+            auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder);
         }
 
         @Bean

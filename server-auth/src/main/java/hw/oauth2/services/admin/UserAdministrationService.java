@@ -1,50 +1,94 @@
 package hw.oauth2.services.admin;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import hw.oauth.messages.UpdateAction;
 import hw.oauth.messages.user.ChangePasswordMessage;
 import hw.oauth.messages.user.CreateUserMessage;
 import hw.oauth.messages.user.DeleteUserMessage;
 import hw.oauth.messages.user.UpdateUserMessage;
+import hw.oauth.messages.user.UpdateUserMessage.Visitor;
+import hw.oauth2.entities.User;
+import hw.oauth2.entities.UserRepository;
 
 @Transactional
 public class UserAdministrationService {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    public UserAdministrationService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserAdministrationService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     public void createUser(CreateUserMessage message) {
-        Instant passwordExpiresAt = mapLocalDate(LocalDate.now());
-        try {
-            new InsertUser(message, jdbcTemplate).insertStatusLogin().insertUser(passwordExpiresAt).insertAuthorities();
-        } catch (DuplicateKeyException ex) {
-            throw new UserAlreadyExistsException("User " + message.getUserId() + " already exists", ex);
-        }
+        checkUserDoesNotExist(message.getUserId());
+
+        final User user = new User();
+        user.setUserId(message.getUserId());
+        user.setPassword(passwordEncoder.encode(message.getPassword()));
+        user.setPasswordExpiresAt(calculatePasswordExpiresDate(0));
+        user.setLoginStatus();
+        message.getAuthorities().stream().forEach(authority -> user.addEntry("AUTHORITY", authority));
+        userRepository.save(user);
     }
 
     public void deleteUser(DeleteUserMessage message) {
-        new DeleteUser(message, jdbcTemplate).deleteUser();
+        User user = checkUserExists(message.getUserId());
+
+        userRepository.delete(user);
     }
 
     public void updateUser(UpdateUserMessage message) {
-        new UpdateUser(message, jdbcTemplate).updateUser();
+        final User user = checkUserExists(message.getUserId());
+        message.visitChanges(new Visitor() {
+
+            @Override
+            public void visitAuthority(UpdateAction action, String authority) {
+                switch (action) {
+                case ADD:
+                    user.addEntry("AUTHORITY", authority);
+                    break;
+                case REMOVE:
+                    user.removeEntry("AUTHORITY", authority);
+                    break;
+                default:
+                    throw new IllegalArgumentException("UpdateAction " + action + " not supported");
+                }
+            }
+        });
     }
 
     public void changePassword(ChangePasswordMessage message) {
-        Instant passwordExpiresAt = mapLocalDate(LocalDate.now().plusDays(90));
-        new ChangePassword(message, jdbcTemplate).changePassword(passwordExpiresAt);
+        final User user = checkUserExists(message.getUserId());
+
+        // Todo: Check user id and old password
+
+        user.setPassword(passwordEncoder.encode(message.getNewPassword()));
+        user.setPasswordExpiresAt(calculatePasswordExpiresDate(90));
     }
 
-    private Instant mapLocalDate(LocalDate date) {
-        return Instant.from(date.atStartOfDay().atZone(ZoneOffset.ofHours(0)));
+    private void checkUserDoesNotExist(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user != null) {
+            throw new UserAlreadyExistsException("User " + userId + " already exists");
+        }
+    }
+
+    private User checkUserExists(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new UserNotFoundException("User " + userId + " does not exists");
+        }
+        return user;
+    }
+
+    private Instant calculatePasswordExpiresDate(int days) {
+        return Instant.now().truncatedTo(ChronoUnit.DAYS).plus(days, ChronoUnit.DAYS);
     }
 }

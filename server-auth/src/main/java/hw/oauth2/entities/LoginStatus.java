@@ -24,11 +24,18 @@ public class LoginStatus {
     @Convert(converter = InstantConverter.class)
     private Instant lastFailedLogin;
 
+    LoginStatus() {
+    }
+
+    public LoginStatus(String userId) {
+        this.userId = userId;
+    }
+
     public String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    void setUserId(String userId) {
         this.userId = userId;
     }
 

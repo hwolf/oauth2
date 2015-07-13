@@ -6,6 +6,10 @@
 spring:
   application:
     name: "OAuth2"
+  jpa:
+    show-sql: false
+    hibernate:
+       ddl-auto: none
 
 server:
   port: 9999

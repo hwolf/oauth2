@@ -3,6 +3,7 @@ package hw.oauth2.entities;
 import java.time.Instant;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -15,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import hw.jpa.converters.InstantConverter;
 
@@ -36,7 +38,7 @@ public class User {
     @CollectionTable(name = "t_user_entries", joinColumns = @JoinColumn(name = "user_id") )
     private Collection<Entry> entries;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private LoginStatus loginStatus;
 
@@ -65,10 +67,31 @@ public class User {
     }
 
     public Collection<Entry> getEntries() {
+        if (entries == null) {
+            return ImmutableSet.of();
+        }
         return ImmutableSet.copyOf(entries);
+    }
+
+    public void addEntry(String name, String value) {
+        if (entries == null) {
+            entries = Sets.newHashSet();
+        }
+        entries.add(Entry.create(name, value));
+    }
+
+    public void removeEntry(String name, String value) {
+        if (entries == null) {
+            return;
+        }
+        entries.remove(Entry.create(name, value));
     }
 
     public LoginStatus getLoginStatus() {
         return loginStatus;
+    }
+
+    public void setLoginStatus() {
+        loginStatus = new LoginStatus(userId);
     }
 }
