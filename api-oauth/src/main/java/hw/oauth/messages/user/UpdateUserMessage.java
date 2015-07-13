@@ -70,8 +70,6 @@ public class UpdateUserMessage implements UserMessage {
     public interface Visitor {
 
         void visitAuthority(UpdateAction action, String authority);
-
-        void visitRole(UpdateAction action, String role);
     }
 
     public interface Update {
