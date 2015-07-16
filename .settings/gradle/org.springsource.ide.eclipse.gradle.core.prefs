@@ -1,6 +1,6 @@
 #org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
-#Fri Jul 10 19:30:08 CEST 2015
-build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;api-oauth;server-auth;server-example-resource;server-example-ui;starter-testutils;starter-utils;starter-web;
+#Wed Jul 15 23:05:07 CEST 2015
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;server-auth;server-example-resource;server-example-ui;starter-testutils;starter-utils;starter-web;
 org.springsource.ide.eclipse.gradle.classname.enableSorting=false
 org.springsource.ide.eclipse.gradle.classpath.enableSorting=true
 org.springsource.ide.eclipse.gradle.classpath.jar.remap.gradle.to.maven=true

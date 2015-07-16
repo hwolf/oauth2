@@ -6,7 +6,7 @@ public interface RefreshTokenRepository extends Repository<RefreshToken, String>
 
     RefreshToken findByTokenId(String tokenId);
 
-    void save(RefreshToken refreshToken);
+    RefreshToken save(RefreshToken refreshToken);
 
     void delete(RefreshToken refreshToken);
 }

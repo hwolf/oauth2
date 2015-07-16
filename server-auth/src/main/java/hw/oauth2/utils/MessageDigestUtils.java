@@ -18,7 +18,7 @@ public class MessageDigestUtils {
         try {
             return MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
+            throw new IllegalStateException("MD5 algorithm not available. Fatal (should be in the JDK).");
         }
     }
 

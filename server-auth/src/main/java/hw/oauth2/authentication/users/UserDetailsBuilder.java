@@ -1,8 +1,5 @@
 package hw.oauth2.authentication.users;
 
-import java.time.Instant;
-import java.util.Date;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,8 +12,9 @@ public class UserDetailsBuilder {
 
     private String userId;
     private String password;
-    private Date passwordExpiresAt;
-    private int failedLogins;
+    private boolean accountEnabled;
+    private boolean passwordExpired;
+    private boolean accountLocked;
     private final ImmutableSet.Builder<GrantedAuthority> authorities = ImmutableSet.builder();
 
     public String userId() {
@@ -33,17 +31,18 @@ public class UserDetailsBuilder {
         return this;
     }
 
-    public UserDetailsBuilder passwordExpiresAt(Instant passwordExpiresAt) {
-        if (passwordExpiresAt == null) {
-            this.passwordExpiresAt = null;
-        } else {
-            this.passwordExpiresAt = Date.from(passwordExpiresAt);
-        }
+    public UserDetailsBuilder accountEnabled(boolean accountEnabled) {
+        this.accountEnabled = accountEnabled;
         return this;
     }
 
-    public UserDetailsBuilder failedLogins(int failedLogins) {
-        this.failedLogins = failedLogins;
+    public UserDetailsBuilder passwordExpired(boolean passwordExpired) {
+        this.passwordExpired = passwordExpired;
+        return this;
+    }
+
+    public UserDetailsBuilder accountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
         return this;
     }
 
@@ -58,7 +57,7 @@ public class UserDetailsBuilder {
     }
 
     public UserDetails build() {
-        return new User(userId, getPassword(), isAccountEnabled(), true, !isPasswordExpired(), !isAccountLocked(),
+        return new User(userId, getPassword(), accountEnabled, true, !passwordExpired, !accountLocked,
                 authorities.build());
     }
 
@@ -69,17 +68,5 @@ public class UserDetailsBuilder {
             return "<no password>";
         }
         return password;
-    }
-
-    private boolean isAccountEnabled() {
-        return StringUtils.hasText(password);
-    }
-
-    private boolean isPasswordExpired() {
-        return passwordExpiresAt == null || !passwordExpiresAt.after(new Date());
-    }
-
-    private boolean isAccountLocked() {
-        return failedLogins > 3;
     }
 }

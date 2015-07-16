@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.springframework.ide.eclipse.boot.launch">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/server-auth/src/main/java/hw/oauth2/Application.java"/>
+<listEntry value="/server-auth/src/main/java/hw/oauth2/HwOauth2Application.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="hw.oauth2.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="hw.oauth2.HwOauth2Application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--port=8081"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="server-auth"/>
 <booleanAttribute key="spring.boot.debug.enable" value="false"/>

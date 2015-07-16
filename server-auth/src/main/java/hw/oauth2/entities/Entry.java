@@ -1,9 +1,14 @@
 package hw.oauth2.entities;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
+import com.google.common.collect.ImmutableSet;
 
 @Embeddable
 public class Entry {
@@ -19,6 +24,16 @@ public class Entry {
         entry.setName(name);
         entry.setData(value);
         return entry;
+    }
+
+    public static Set<String> filterEntriesByName(String name, Collection<Entry> entries) {
+        if (entries == null) {
+            return ImmutableSet.of();
+        }
+        return entries.stream() //
+                .filter(entry -> Objects.equals(name, entry.getName())) //
+                .map(entry -> entry.getData()) //
+                .collect(Collectors.toSet());
     }
 
     public String getName() {

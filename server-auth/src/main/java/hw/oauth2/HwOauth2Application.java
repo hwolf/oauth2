@@ -24,7 +24,6 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import hw.oauth.password.MyPasswordEncoder;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
 import hw.oauth2.authentication.tokens.TokenServiceImpl;
@@ -35,24 +34,16 @@ import hw.oauth2.entities.ApprovalRepository;
 import hw.oauth2.entities.ClientRepository;
 import hw.oauth2.entities.LoginStatusRepository;
 import hw.oauth2.entities.RefreshTokenRepository;
-import hw.oauth2.entities.UserRepository;
-import hw.oauth2.services.admin.UserAdministrationService;
+import hw.oauth2.entities.user.UserRepository;
+import hw.oauth2.password.MyPasswordEncoder;
 import hw.web.ApplicationBase;
 
 @EnableResourceServer
-public class Application extends ApplicationBase {
-
-    @Autowired
-    private UserRepository userRepository;
+public class HwOauth2Application extends ApplicationBase {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return MyPasswordEncoder.builder().defaultEncoder("bcrypt-1", new BCryptPasswordEncoder(10)).build();
-    }
-
-    @Bean
-    public UserAdministrationService userAdministrationService() {
-        return new UserAdministrationService(passwordEncoder(), userRepository);
     }
 
     @Configuration
@@ -112,10 +103,11 @@ public class Application extends ApplicationBase {
                     .loginPage(Urls.LOGIN).permitAll()
                     .and()
                 .requestMatchers()
-                    .antMatchers(Urls.LOGIN, Urls.OAUTH_AUTHORIZE, Urls.OAUTH_CONFIRM_ACCESS, "/manage/**") //
+                    .antMatchers(Urls.LOGIN, Urls.OAUTH_AUTHORIZE, Urls.OAUTH_CONFIRM_ACCESS, "/manage/**", "/api/**") //
                     .and()
                 .authorizeRequests() //
                     .antMatchers("/manage/**").hasRole("ADMIN") //
+                    .antMatchers("/api/**").hasRole("ADMIN") //
                     .anyRequest().authenticated()
                     .and();
             /* @formatter:on */
@@ -170,6 +162,6 @@ public class Application extends ApplicationBase {
     }
 
     public static void main(String[] args) {
-        runApplication(Application.class, args);
+        runApplication(HwOauth2Application.class, args);
     }
 }

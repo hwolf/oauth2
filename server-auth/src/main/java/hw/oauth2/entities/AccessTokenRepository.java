@@ -16,7 +16,7 @@ public interface AccessTokenRepository extends Repository<AccessToken, String> {
 
     Collection<AccessToken> findByClientIdAndUserId(String clientId, String userId);
 
-    void save(AccessToken accessToken);
+    AccessToken save(AccessToken accessToken);
 
     void delete(AccessToken accessToken);
 }

@@ -1,4 +1,4 @@
-package hw.oauth.password
+package hw.oauth2.password
 
 import org.springframework.security.crypto.password.PasswordEncoder
 

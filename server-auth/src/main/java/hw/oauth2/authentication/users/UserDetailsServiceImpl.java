@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import hw.oauth2.entities.Entry;
-import hw.oauth2.entities.User;
-import hw.oauth2.entities.UserRepository;
+import hw.oauth2.entities.user.User;
+import hw.oauth2.entities.user.UserRepository;
 
 @Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -57,8 +57,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDetailsBuilder builder = new UserDetailsBuilder() //
                 .userId(user.getUserId()) //
                 .password(user.getPassword()) //
-                .passwordExpiresAt(user.getPasswordExpiresAt()) //
-                .failedLogins(user.getLoginStatus().getFailedLoginAttempts());
+                .accountEnabled(user.isEnabled()) //
+                .passwordExpired(user.isPasswordExpired()) //
+                .accountLocked(user.isAccountLocked());
         user.getEntries().stream().forEach(mapEntry(builder));
         return builder.build();
     }

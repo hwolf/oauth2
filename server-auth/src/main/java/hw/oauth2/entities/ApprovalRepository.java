@@ -10,7 +10,7 @@ public interface ApprovalRepository extends Repository<Approval, ApprovalPK> {
 
     Collection<Approval> findByUserIdAndClientId(String userId, String clientId);
 
-    void save(Approval approval);
+    Approval save(Approval approval);
 
     void delete(ApprovalPK approvalPK);
 }

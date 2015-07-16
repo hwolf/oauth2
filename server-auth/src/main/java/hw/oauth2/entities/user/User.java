@@ -1,11 +1,11 @@
-package hw.oauth2.entities;
+package hw.oauth2.entities.user;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
-import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -14,11 +14,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.util.StringUtils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import hw.jpa.converters.InstantConverter;
+import hw.oauth2.entities.Entry;
+import hw.oauth2.entities.LoginStatus;
 
 @Entity
 @Table(name = "t_users")
@@ -27,10 +32,11 @@ public class User {
     @Id
     private String userId;
 
-    @Column(nullable = false)
+    @Transient
+    private String oldUserId;
+
     private String password;
 
-    @Column(nullable = false)
     @Convert(converter = InstantConverter.class)
     private Instant passwordExpiresAt;
 
@@ -47,7 +53,14 @@ public class User {
     }
 
     public void setUserId(String userId) {
+        if (oldUserId == null) {
+            oldUserId = this.userId;
+        }
         this.userId = userId;
+    }
+
+    String getOldUserId() {
+        return oldUserId;
     }
 
     public String getPassword() {
@@ -64,6 +77,10 @@ public class User {
 
     public void setPasswordExpiresAt(Instant passwordExpiredAt) {
         passwordExpiresAt = passwordExpiredAt;
+    }
+
+    public Set<String> getAuthorities() {
+        return Entry.filterEntriesByName("AUTHORITY", entries);
     }
 
     public Collection<Entry> getEntries() {
@@ -88,10 +105,22 @@ public class User {
     }
 
     public LoginStatus getLoginStatus() {
+        if (loginStatus == null) {
+            loginStatus = new LoginStatus(userId);
+        }
         return loginStatus;
     }
 
-    public void setLoginStatus() {
-        loginStatus = new LoginStatus(userId);
+    public boolean isEnabled() {
+        return StringUtils.hasText(password);
     }
+
+    public boolean isPasswordExpired() {
+        return passwordExpiresAt == null || !passwordExpiresAt.isAfter(Instant.now());
+    }
+
+    public boolean isAccountLocked() {
+        return getLoginStatus().getFailedLoginAttempts() > 3;
+    }
+
 }

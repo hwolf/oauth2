@@ -1,4 +1,4 @@
-package hw.oauth.password;
+package hw.oauth2.password;
 
 import java.util.Map;
 
@@ -10,6 +10,8 @@ import com.google.common.collect.Maps;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
+import hw.oauth2.password.MyPasswordEncoder;
 
 /**
  * A password encoder which supports several password encoders. The encoded password is prefixed by
