@@ -40,4 +40,4 @@ dependencies {
 
 group = 'hw'
 version = "$version"
-mainClassName = 'hw.oauth2.Application'
+mainClassName = 'hw.oauth2.HwOauth2Application'
