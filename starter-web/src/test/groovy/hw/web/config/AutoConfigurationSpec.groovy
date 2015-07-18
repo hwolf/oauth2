@@ -8,7 +8,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration
 import spock.lang.Specification
 
 /**
- * Tests which checks that the auto configuration in {@code /META-INF/spring.factories} is correct.
+ * Tests which check that the auto configuration in {@code /META-INF/spring.factories} is correct.
  * <p>
  * Hint: The class {@code TestApplication} must be in sub package, otherwise the classes {@code hw.web.config} will be found by component scan.
  * </p>
