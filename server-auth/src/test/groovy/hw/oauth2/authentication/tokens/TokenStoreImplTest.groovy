@@ -6,6 +6,7 @@ import hw.oauth2.entities.RefreshTokenRepository
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import javax.sql.DataSource
 
 import org.junit.After
 import org.junit.Before
@@ -13,8 +14,11 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.orm.jpa.EntityScan
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -32,6 +36,12 @@ class TokenStoreImplTest extends TokenServiceImplTest {
     @EntityScan(basePackageClasses = AccessToken)
     @EnableJpaRepositories(basePackageClasses = AccessTokenRepository)
     static class TestConfiguration {
+
+        @Bean
+        @Primary
+        DataSource getDataSource() {
+            return new EmbeddedDatabaseBuilder().build()
+        }
     }
 
     @PersistenceContext

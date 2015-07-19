@@ -3,13 +3,6 @@ springBoot {
     bootRepackage.enabled = true
 }
 
-test {
-    systemProperty 'SPRING_DATASOURCE_URL', System.properties['SPRING_DATASOURCE_URL']
-    systemProperty 'SPRING_DATASOURCE_USERNAME', System.properties['SPRING_DATASOURCE_USERNAME']
-    systemProperty 'SPRING_DATASOURCE_PASSWORD', System.properties['SPRING_DATASOURCE_PASSWORD']
-    systemProperty 'SPRING_DATASOURCE_DRIVERCLASSNAME', System.properties['SPRING_DATASOURCE_DRIVERCLASSNAME']
-}
-
 dependencies {
     compile project(":starter-web")
     compile "org.springframework.boot:spring-boot-starter-security"
