@@ -1,6 +1,8 @@
 
 driver = "firefox"
 
+reportsDir = "build/geb-reports"
+
 waiting { timeout = 2 }
 
 environments {

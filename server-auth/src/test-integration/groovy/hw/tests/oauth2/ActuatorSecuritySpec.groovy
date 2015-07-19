@@ -1,6 +1,6 @@
 package hw.tests.oauth2
 
-import geb.spock.GebSpec
+import geb.spock.GebReportingSpec
 import hw.oauth2.HwOauth2Application
 import hw.tests.oauth2.pages.LoginPage
 
@@ -15,7 +15,7 @@ import spock.lang.Unroll
 @WebIntegrationTest(randomPort = true)
 @SpringApplicationConfiguration(classes = HwOauth2Application)
 @ActiveProfiles([ "dev" ])
-class ActuatorSecuritySpec extends GebSpec {
+class ActuatorSecuritySpec extends GebReportingSpec {
 
     static final USER_ID ="admin"
     static final PASSWORD = "admin"
