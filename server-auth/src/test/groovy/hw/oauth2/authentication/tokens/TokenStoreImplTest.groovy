@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.orm.jpa.EntityScan
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
@@ -27,11 +26,12 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 
 @RunWith(SpringJUnit4ClassRunner)
+//@IntegrationTest
 @ContextConfiguration(classes = TestConfiguration)
 @ActiveProfiles("dev")
-class TokenStoreImplTest extends TokenServiceImplTest {
+class TokenStoreImplTest extends TokenStoreBaseTests {
 
-    @Configuration
+    //    @Configuration
     @EnableAutoConfiguration
     @EntityScan(basePackageClasses = AccessToken)
     @EnableJpaRepositories(basePackageClasses = AccessTokenRepository)
@@ -89,7 +89,7 @@ class TokenStoreImplTest extends TokenServiceImplTest {
     //    @Test
     //    void testFindAccessTokensByUserName() {
     //        OAuth2Authentication expectedAuthentication = new OAuth2Authentication(RequestTokenFactory.createOAuth2Request("id", false),
-    //                new TokenServiceImplTest.TestAuthentication("test2", false))
+    //                new TokenStoreBaseTests.TestAuthentication("test2", false))
     //        OAuth2AccessToken expectedOAuth2AccessToken = new DefaultOAuth2AccessToken("testToken")
     //        getTokenStore().storeAccessToken(expectedOAuth2AccessToken, expectedAuthentication)
     //

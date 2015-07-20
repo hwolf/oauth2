@@ -65,6 +65,8 @@ spring:
 
 spring:
   profiles: test
+  thymeleaf:
+    cache: false
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
     url: jdbc:mysql://localhost/test1_hwoauth2

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import org.springframework.security.oauth2.provider.approval.Approval.ApprovalStatus;
 
-import hw.jpa.converters.InstantConverter;
+import hw.oauth2.jpa.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_approvals")

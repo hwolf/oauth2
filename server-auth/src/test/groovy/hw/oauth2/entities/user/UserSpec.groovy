@@ -1,9 +1,10 @@
 package hw.oauth2.entities.user
 
+import hw.oauth2.entities.User
+
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-import hw.oauth2.entities.user.User;
 import spock.lang.Specification
 
 class UserSpec extends Specification {
@@ -63,9 +64,9 @@ class UserSpec extends Specification {
         !user.enabled
     }
 
-    def "with 3 failed login attempts, the account is not locked"() {
+    def "with 2 failed login attempts, the account is not locked"() {
         given:
-        int failedLogins = 3
+        int failedLogins = 2
 
         when:
         User user = new User()
@@ -75,9 +76,9 @@ class UserSpec extends Specification {
         !user.accountLocked
     }
 
-    def "with 4 failed login attempts, the account is locked"() {
+    def "with 3 failed login attempts, the account is locked"() {
         given:
-        int failedLogins = 4
+        int failedLogins = 3
 
         when:
         User user = new User()

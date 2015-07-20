@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore
 /**
  * Copied from {@link https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/test/java/org/springframework/security/oauth2/provider/token/store/TokenStoreBaseTests.java}.
  */
-abstract class TokenServiceImplTest {
+abstract class TokenStoreBaseTests {
 
     abstract TokenStore getTokenStore()
 

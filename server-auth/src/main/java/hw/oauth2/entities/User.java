@@ -1,4 +1,4 @@
-package hw.oauth2.entities.user;
+package hw.oauth2.entities;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -21,9 +21,7 @@ import org.springframework.util.StringUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import hw.jpa.converters.InstantConverter;
-import hw.oauth2.entities.Entry;
-import hw.oauth2.entities.LoginStatus;
+import hw.oauth2.jpa.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_users")
@@ -120,7 +118,7 @@ public class User {
     }
 
     public boolean isAccountLocked() {
-        return getLoginStatus().getFailedLoginAttempts() > 3;
+        return getLoginStatus().getFailedLoginAttempts() >= 3;
     }
 
 }

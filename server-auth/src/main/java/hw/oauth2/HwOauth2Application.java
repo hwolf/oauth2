@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,9 +22,13 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.google.common.collect.ImmutableMap;
+
+import hw.oauth2.authentication.MyAuthenticationSuccessHandler;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
 import hw.oauth2.authentication.tokens.TokenServiceImpl;
@@ -34,7 +39,7 @@ import hw.oauth2.entities.ApprovalRepository;
 import hw.oauth2.entities.ClientRepository;
 import hw.oauth2.entities.LoginStatusRepository;
 import hw.oauth2.entities.RefreshTokenRepository;
-import hw.oauth2.entities.user.UserRepository;
+import hw.oauth2.entities.UserRepository;
 import hw.oauth2.password.MyPasswordEncoder;
 import hw.web.ApplicationBase;
 
@@ -51,8 +56,9 @@ public class HwOauth2Application extends ApplicationBase {
 
         @Override
         public void addViewControllers(ViewControllerRegistry registry) {
-            registry.addViewController("/").setViewName("home");
+            registry.addViewController(Urls.HOME).setViewName("home");
             registry.addViewController(Urls.LOGIN).setViewName("login");
+            registry.addViewController(Urls.ACCOUNT_LOCKED).setViewName("account-locked");
             registry.addViewController(Urls.OAUTH_CONFIRM_ACCESS).setViewName("oauth-confirm-access");
             registry.addViewController(Urls.OAUTH_ERROR).setViewName("oauth-error");
         }
@@ -88,11 +94,12 @@ public class HwOauth2Application extends ApplicationBase {
 
     @Configuration
     @Order(-10)
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
     protected static class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/", "/webjars/**", "/error-pages/**");
+            web.ignoring().antMatchers(Urls.HOME, "/webjars/**", "/error-pages/**");
         }
 
         @Override
@@ -101,16 +108,27 @@ public class HwOauth2Application extends ApplicationBase {
             http
                 .formLogin()
                     .loginPage(Urls.LOGIN).permitAll()
+                    .successHandler(successHandler())
                     .and()
                 .requestMatchers()
-                    .antMatchers(Urls.LOGIN, Urls.OAUTH_AUTHORIZE, Urls.OAUTH_CONFIRM_ACCESS, "/manage/**", "/api/**") //
+                    .antMatchers(Urls.LOGIN, Urls.OAUTH_AUTHORIZE, Urls.OAUTH_CONFIRM_ACCESS, //
+                            Urls.ACCOUNT_LOCKED, Urls.CHANGE_PASSWORD, "/manage/**", "/api/**") //
                     .and()
                 .authorizeRequests() //
                     .antMatchers("/manage/**").hasRole("ADMIN") //
                     .antMatchers("/api/**").hasRole("ADMIN") //
+                    .antMatchers(Urls.ACCOUNT_LOCKED).hasRole(Roles.ACCOUNT_LOCKED) //
+                    .antMatchers(Urls.CHANGE_PASSWORD).hasAnyRole(Roles.MUST_CHANGE_PASSWORD, Roles.AUTHENTICATED) //
                     .anyRequest().authenticated()
                     .and();
             /* @formatter:on */
+        }
+
+        private AuthenticationSuccessHandler successHandler() {
+            ImmutableMap.Builder<String, String> redirects = ImmutableMap.builder();
+            redirects.put("ROLE_" + Roles.MUST_CHANGE_PASSWORD, Urls.CHANGE_PASSWORD);
+            redirects.put("ROLE_" + Roles.ACCOUNT_LOCKED, Urls.ACCOUNT_LOCKED);
+            return new MyAuthenticationSuccessHandler(redirects.build());
         }
     }
 

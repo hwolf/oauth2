@@ -1,4 +1,4 @@
-package hw.oauth2.entities.user;
+package hw.oauth2.entities;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

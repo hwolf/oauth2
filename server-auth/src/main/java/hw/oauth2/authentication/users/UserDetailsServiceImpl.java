@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import hw.oauth2.entities.Entry;
-import hw.oauth2.entities.user.User;
-import hw.oauth2.entities.user.UserRepository;
+import hw.oauth2.entities.User;
+import hw.oauth2.entities.UserRepository;
 
 @Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {

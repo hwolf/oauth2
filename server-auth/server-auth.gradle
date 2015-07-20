@@ -14,6 +14,8 @@ dependencies {
     compile "org.thymeleaf:thymeleaf-spring4"
     compile "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect"
 
+    compile "org.passay:passay:1.0"
+    
     compile "org.webjars:bootstrap:3.3.5"
     compile "org.webjars:font-awesome:4.3.0-2"
     compile "org.webjars:jquery:2.1.4"

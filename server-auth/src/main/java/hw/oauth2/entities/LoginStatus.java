@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import hw.jpa.converters.InstantConverter;
+import hw.oauth2.jpa.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_login_status")

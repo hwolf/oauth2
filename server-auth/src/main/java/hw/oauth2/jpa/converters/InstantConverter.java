@@ -1,4 +1,4 @@
-package hw.jpa.converters;
+package hw.oauth2.jpa.converters;
 
 import java.sql.Timestamp;
 import java.time.Instant;

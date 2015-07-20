@@ -1,12 +1,19 @@
 package hw.oauth2.authentication.users;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import hw.oauth2.Roles;
 
 public class UserDetailsBuilder {
 
@@ -15,7 +22,7 @@ public class UserDetailsBuilder {
     private boolean accountEnabled;
     private boolean passwordExpired;
     private boolean accountLocked;
-    private final ImmutableSet.Builder<GrantedAuthority> authorities = ImmutableSet.builder();
+    private final Set<String> authorities = Sets.newHashSet();
 
     public String userId() {
         return userId;
@@ -47,26 +54,29 @@ public class UserDetailsBuilder {
     }
 
     public UserDetailsBuilder withAuthority(String authority) {
-        authorities.add(new SimpleGrantedAuthority(authority));
+        authorities.add(authority);
         return this;
     }
 
     public UserDetailsBuilder withRole(String role) {
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+        authorities.add("ROLE_" + role);
         return this;
     }
 
     public UserDetails build() {
-        return new User(userId, getPassword(), accountEnabled, true, !passwordExpired, !accountLocked,
-                authorities.build());
+        return new User(userId, password, accountEnabled, true, true, true, mapAuthorities());
     }
 
-    private String getPassword() {
-        if (!StringUtils.hasText(password)) {
-            // if there is no password, account is disabled, but the class
-            // org.springframework.security.core.userdetails.User needs a password.
-            return "<no password>";
+    private Collection<? extends GrantedAuthority> mapAuthorities() {
+        Preconditions.checkState(!authorities.contains("ROLE_" + Roles.ACCOUNT_LOCKED)
+                && !authorities.contains("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
+        if (accountLocked) {
+            return ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.ACCOUNT_LOCKED));
         }
-        return password;
+        if (passwordExpired) {
+            return ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
+        }
+        authorities.add("ROLE_" + Roles.AUTHENTICATED);
+        return authorities.stream().map(authority -> new SimpleGrantedAuthority(authority)).collect(Collectors.toSet());
     }
 }
