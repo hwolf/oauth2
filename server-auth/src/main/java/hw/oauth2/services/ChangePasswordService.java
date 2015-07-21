@@ -32,26 +32,26 @@ public class ChangePasswordService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // Step 1: Check user id against authenticated user
         if (!Objects.equal(userId, authentication.getName())) {
             errors.reject("BadCredentials", "Bad credentials");
             return;
         }
 
-        // Step 1: Search user in repository
+        // Step 2: Search user in repository
         User user = loadUserByUserId(userId, errors);
         if (user == null) {
             return;
         }
 
-        // Step 2: Validate if old password is correct.
+        // Step 3: Validate if old password is correct.
         if (!authenticate(user, oldPassword, errors)) {
             return;
         }
 
-        // Step 3: Validate new password.
+        // Step 4: Validate new password.
         changePassword(user, newPassword);
 
-        authentication.setAuthenticated(false);
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 
