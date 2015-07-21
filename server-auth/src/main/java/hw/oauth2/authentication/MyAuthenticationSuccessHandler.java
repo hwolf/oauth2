@@ -11,14 +11,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class MyAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private final Map<String, String> redirectsByAuthority;
+    private final Map<String, String> redirectsByAuthority = Maps.newConcurrentMap();
 
-    public MyAuthenticationSuccessHandler(Map<String, String> redirectsByAuthority) {
-        this.redirectsByAuthority = ImmutableMap.copyOf(redirectsByAuthority);
+    public void addRedirect(String authority, String targetUrl) {
+        redirectsByAuthority.put(authority, targetUrl);
     }
 
     @Override

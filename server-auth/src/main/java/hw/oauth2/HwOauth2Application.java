@@ -26,8 +26,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.google.common.collect.ImmutableMap;
-
 import hw.oauth2.authentication.MyAuthenticationSuccessHandler;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
@@ -125,10 +123,10 @@ public class HwOauth2Application extends ApplicationBase {
         }
 
         private AuthenticationSuccessHandler successHandler() {
-            ImmutableMap.Builder<String, String> redirects = ImmutableMap.builder();
-            redirects.put("ROLE_" + Roles.MUST_CHANGE_PASSWORD, Urls.CHANGE_PASSWORD);
-            redirects.put("ROLE_" + Roles.ACCOUNT_LOCKED, Urls.ACCOUNT_LOCKED);
-            return new MyAuthenticationSuccessHandler(redirects.build());
+            MyAuthenticationSuccessHandler handler = new MyAuthenticationSuccessHandler();
+            handler.addRedirect("ROLE_" + Roles.MUST_CHANGE_PASSWORD, Urls.CHANGE_PASSWORD);
+            handler.addRedirect("ROLE_" + Roles.ACCOUNT_LOCKED, Urls.ACCOUNT_LOCKED);
+            return handler;
         }
     }
 
