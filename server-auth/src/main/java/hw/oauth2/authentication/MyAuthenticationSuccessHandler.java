@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
+//TODO: Better name
 public class MyAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final Map<String, String> redirectsByAuthority = Maps.newConcurrentMap();

@@ -3,6 +3,7 @@ package hw.oauth2.entities;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -14,8 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.StringUtils;
 
 import com.google.common.collect.ImmutableSet;
@@ -29,9 +31,6 @@ public class User {
 
     @Id
     private String userId;
-
-    @Transient
-    private String oldUserId;
 
     private String password;
 
@@ -51,14 +50,7 @@ public class User {
     }
 
     public void setUserId(String userId) {
-        if (oldUserId == null) {
-            oldUserId = this.userId;
-        }
         this.userId = userId;
-    }
-
-    String getOldUserId() {
-        return oldUserId;
     }
 
     public String getPassword() {
@@ -77,8 +69,9 @@ public class User {
         passwordExpiresAt = passwordExpiredAt;
     }
 
-    public Set<String> getAuthorities() {
-        return Entry.filterEntriesByName("AUTHORITY", entries);
+    public Set<GrantedAuthority> getAuthorities() {
+        return Entry.filterEntriesByName("AUTHORITY", entries).stream()
+                .map(authority -> new SimpleGrantedAuthority(authority)).collect(Collectors.toSet());
     }
 
     public Collection<Entry> getEntries() {

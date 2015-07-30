@@ -1,6 +1,4 @@
-package hw.oauth2.entities.user
-
-import hw.oauth2.entities.User
+package hw.oauth2.entities
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -47,7 +45,7 @@ class UserSpec extends Specification {
         String password = "given password"
 
         when:
-        User user = new User (password: password)
+        User user = new User(password: password)
 
         then:
         user.enabled

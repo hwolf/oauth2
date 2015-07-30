@@ -21,7 +21,7 @@ public class ApprovalServiceImpl implements ApprovalStore {
 
     @Override
     public List<Approval> getApprovals(String userId, String clientId) {
-        return approvalRepository.findByUserIdAndClientId(userId.toLowerCase(), clientId) //
+        return approvalRepository.findByUserIdAndClientId(userId, clientId) //
                 .stream() //
                 .map(this::mapApproval) //
                 .collect(Collectors.toList());

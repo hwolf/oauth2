@@ -4,6 +4,8 @@ import geb.Page
 
 public class LoginPage extends Page {
 
+    static url = "/uaa/login"
+
     static at = {
         heading.text() == "Please Login"
     }
@@ -12,6 +14,9 @@ public class LoginPage extends Page {
         heading { $("h2") }
         loginForm {  $("form[role='form']") }
         loginButton { $("button[name='login']") }
+
+        errorMessage { $("form .alert").text() }
+        noErrorMessage { $("form .alert").isEmpty() }
     }
 
     def login(user, password) {

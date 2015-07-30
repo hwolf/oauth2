@@ -43,23 +43,21 @@ public class LoginStatus {
         return failedLoginAttempts;
     }
 
-    public void setFailedLoginAttempts(int failedLoginAttempts) {
-        this.failedLoginAttempts = failedLoginAttempts;
-    }
-
     public Instant getLastSuccessfulLogin() {
         return lastSuccessfulLogin;
-    }
-
-    public void setLastSuccessfulLogin(Instant lastSuccessfulLogin) {
-        this.lastSuccessfulLogin = lastSuccessfulLogin;
     }
 
     public Instant getLastFailedLogin() {
         return lastFailedLogin;
     }
 
-    public void setLastFailedLogin(Instant lastFailedLogin) {
-        this.lastFailedLogin = lastFailedLogin;
+    public void loginSuccessful(Instant when) {
+        failedLoginAttempts = 0;
+        lastSuccessfulLogin = when;
+    }
+
+    public void loginFailed(Instant when) {
+        failedLoginAttempts++;
+        lastFailedLogin = when;
     }
 }

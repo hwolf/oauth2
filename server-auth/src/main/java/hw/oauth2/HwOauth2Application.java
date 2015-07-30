@@ -5,13 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -26,16 +26,14 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import hw.oauth2.authentication.MyAuthenticationProvider;
 import hw.oauth2.authentication.MyAuthenticationSuccessHandler;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
 import hw.oauth2.authentication.tokens.TokenServiceImpl;
-import hw.oauth2.authentication.users.UpdateLoginStatus;
-import hw.oauth2.authentication.users.UserDetailsServiceImpl;
 import hw.oauth2.entities.AccessTokenRepository;
 import hw.oauth2.entities.ApprovalRepository;
 import hw.oauth2.entities.ClientRepository;
-import hw.oauth2.entities.LoginStatusRepository;
 import hw.oauth2.entities.RefreshTokenRepository;
 import hw.oauth2.entities.UserRepository;
 import hw.oauth2.password.MyPasswordEncoder;
@@ -56,7 +54,6 @@ public class HwOauth2Application extends ApplicationBase {
         public void addViewControllers(ViewControllerRegistry registry) {
             registry.addViewController(Urls.HOME).setViewName("home");
             registry.addViewController(Urls.LOGIN).setViewName("login");
-            registry.addViewController(Urls.ACCOUNT_LOCKED).setViewName("account-locked");
             registry.addViewController(Urls.OAUTH_CONFIRM_ACCESS).setViewName("oauth-confirm-access");
             registry.addViewController(Urls.OAUTH_ERROR).setViewName("oauth-error");
         }
@@ -69,24 +66,16 @@ public class HwOauth2Application extends ApplicationBase {
         private UserRepository userRepository;
 
         @Autowired
-        private LoginStatusRepository loginStatusRepository;
-
-        @Autowired
         private PasswordEncoder passwordEncoder;
 
         @Override
         public void init(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder);
+            auth.authenticationProvider(authenticationProvider());
         }
 
         @Bean
-        public UserDetailsService userDetailsService() {
-            return new UserDetailsServiceImpl(userRepository);
-        }
-
-        @Bean
-        public UpdateLoginStatus authenticationListener() {
-            return new UpdateLoginStatus(loginStatusRepository);
+        public AuthenticationProvider authenticationProvider() {
+            return new MyAuthenticationProvider(passwordEncoder, userRepository);
         }
     }
 
@@ -110,22 +99,19 @@ public class HwOauth2Application extends ApplicationBase {
                     .and()
                 .requestMatchers()
                     .antMatchers(Urls.LOGIN, Urls.OAUTH_AUTHORIZE, Urls.OAUTH_CONFIRM_ACCESS, //
-                            Urls.ACCOUNT_LOCKED, Urls.CHANGE_PASSWORD, "/manage/**", "/api/**") //
+                            Urls.CHANGE_PASSWORD, "/manage/**", "/api/**") //
                     .and()
                 .authorizeRequests() //
                     .antMatchers("/manage/**").hasRole("ADMIN") //
                     .antMatchers("/api/**").hasRole("ADMIN") //
-                    .antMatchers(Urls.ACCOUNT_LOCKED).hasRole(Roles.ACCOUNT_LOCKED) //
                     .antMatchers(Urls.CHANGE_PASSWORD).hasAnyRole(Roles.MUST_CHANGE_PASSWORD, Roles.AUTHENTICATED) //
-                    .anyRequest().authenticated()
-                    .and();
+                    .anyRequest().authenticated();
             /* @formatter:on */
         }
 
         private AuthenticationSuccessHandler successHandler() {
             MyAuthenticationSuccessHandler handler = new MyAuthenticationSuccessHandler();
             handler.addRedirect("ROLE_" + Roles.MUST_CHANGE_PASSWORD, Urls.CHANGE_PASSWORD);
-            handler.addRedirect("ROLE_" + Roles.ACCOUNT_LOCKED, Urls.ACCOUNT_LOCKED);
             return handler;
         }
     }

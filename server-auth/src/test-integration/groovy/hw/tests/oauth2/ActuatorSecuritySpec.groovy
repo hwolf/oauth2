@@ -1,61 +1,73 @@
 package hw.tests.oauth2
 
-import geb.spock.GebReportingSpec
-import hw.oauth2.HwOauth2Application
+import hw.oauth2.entities.UserRepository
 import hw.tests.oauth2.pages.LoginPage
-
-import org.junit.Before
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.SpringApplicationConfiguration
-import org.springframework.boot.test.WebIntegrationTest
-import org.springframework.test.context.ActiveProfiles
-
+import hw.tests.oauth2.utils.UserHelper
 import spock.lang.Unroll
 
-@WebIntegrationTest(randomPort = true)
-@SpringApplicationConfiguration(classes = HwOauth2Application)
-@ActiveProfiles([ "dev" ])
-class ActuatorSecuritySpec extends GebReportingSpec {
+class ActuatorSecuritySpec extends HwOauth2Spec {
 
-    static final USER_ID ="admin"
-    static final PASSWORD = "admin"
-
-    @Value('${local.server.port}')
-    int serverPort
-
-    @Before
-    void setupUrl() {
-        browser.baseUrl = "http://localhost:${serverPort}/uaa/"
-    }
+    static final Collection<String> ENDPOINTS = [
+        'manage/autoconfig',
+        'manage/beans',
+        'manage/configprops',
+        'manage/dump',
+        'manage/env',
+        'manage/health',
+        'manage/info',
+        'manage/metrics',
+        'manage/mappings',
+        'manage/trace',
+        'manage/jolokia'
+    ]
 
     @Unroll
-    def "actuator endpoint #endpoint should protected"(endpoint) {
+    def "An admin user should have access to the actuator endpoint #endpoint"(endpoint) {
+        given:
+        String adminUser = "admin1"
+        String password = "password"
+        userHelper.deleteUser(adminUser)
+        userHelper.createUser(adminUser, password, "ADMIN")
+
         when:
         go endpoint
 
         then:
-        at(LoginPage)
+        at LoginPage
 
         when:
-        login USER_ID, PASSWORD
+        login adminUser, password
 
         then:
         currentUrl.endsWith endpoint
         !$('h1')
 
         where:
-        endpoint << [
-            'manage/autoconfig',
-            'manage/beans',
-            'manage/configprops',
-            'manage/dump',
-            'manage/env',
-            'manage/health',
-            'manage/info',
-            'manage/metrics',
-            'manage/mappings',
-            'manage/trace',
-            'manage/jolokia'
-        ]
+        endpoint << ENDPOINTS
+    }
+
+    @Unroll
+    def "A non admin user should not have access to the actuator endpoint #endpoint"(endpoint) {
+        given:
+        String user = "user1"
+        String password = "password"
+        userHelper.deleteUser(user)
+        userHelper.createUser(user, password, "OTHER_ROLE")
+
+        when:
+        go endpoint
+
+        then:
+        at LoginPage
+
+        when:
+        login user, password
+
+        then:
+        currentUrl.endsWith endpoint
+        $('h1').text() == '403'
+
+        where:
+        endpoint << ENDPOINTS
     }
 }

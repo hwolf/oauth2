@@ -115,7 +115,7 @@ public class ClientServiceImpl implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        Client client = clientRepository.findOne(clientId.toLowerCase());
+        Client client = clientRepository.findOne(clientId);
         if (client == null) {
             throw new NoSuchClientException("No client with requested id: " + clientId);
         }
@@ -126,34 +126,7 @@ public class ClientServiceImpl implements ClientDetailsService {
                 .refreshTokenValiditySeconds(client.getRefreshTokenValidity());
         client.getEntries().stream().forEach(mapEntry(builder));
         return builder.build();
-        // List<ClientDetailsBuilder> clients = loadClientsByClientId(clientId);
-        // if (clients.isEmpty()) {
-        // throw new NoSuchClientException("No client with requested id: " + clientId);
-        // }
-        // ClientDetailsBuilder client = clients.get(0);
-        // loadEntries(client.clientId(), client);
-        // return client.build();
     }
-
-    // private List<ClientDetailsBuilder> loadClientsByClientId(String clientId) {
-    // return jdbcTemplate.query(SQL_LOAD_CLIENTS_BY_CLIENTID, new String[] { clientId.toLowerCase()
-    // },
-    // (rs, rowNum) -> {
-    // return new ClientDetailsBuilder() //
-    // .clientId(rs.getString(1)) //
-    // .clientSecret(rs.getString(2)) //
-    // .accessTokenValiditySeconds(rs.getInt(3)) //
-    // .refreshTokenValiditySeconds(rs.getInt(4));
-    // });
-    // }
-    //
-    // private void loadEntries(String clientId, ClientDetailsBuilder client) {
-    // jdbcTemplate.query(SQL_LOAD_ENTRIES_BY_CLIENTID, new String[] { clientId }, rs -> {
-    // String name = rs.getString(1);
-    // String data = rs.getString(2);
-    // findEntry(name).setValue(data, client);
-    // });
-    // }
 
     private Consumer<? super Entry> mapEntry(ClientDetailsBuilder builder) {
         return entry -> findMapper(entry.getName()).setValue(entry.getData(), builder);
