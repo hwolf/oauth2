@@ -15,24 +15,6 @@ import hw.oauth2.entities.Entry;
 @Transactional(readOnly = true)
 public class ClientServiceImpl implements ClientDetailsService {
 
-    // private static final String SQL_LOAD_CLIENTS_BY_CLIENTID = "select " //
-    // + " client_id, " //
-    // + " client_secret, " //
-    // + " access_token_validity, " //
-    // + " refresh_token_validity " //
-    // + "from " //
-    // + " t_clients " //
-    // + "where " //
-    // + " client_id = ?";
-    //
-    // private static final String SQL_LOAD_ENTRIES_BY_CLIENTID = "select " //
-    // + " name, " //
-    // + " data " //
-    // + "from " //
-    // + " t_client_entries " //
-    // + "where " //
-    // + " client_id = ?";
-
     private enum EntryMapper {
         GRANT_TYPE {
 
@@ -101,12 +83,6 @@ public class ClientServiceImpl implements ClientDetailsService {
         abstract void setValue(String value, ClientDetailsBuilder user);
     }
 
-    // private final JdbcTemplate jdbcTemplate;
-    //
-    // public ClientServiceImpl(JdbcTemplate jdbcTemplate) {
-    // this.jdbcTemplate = jdbcTemplate;
-    // }
-
     private final ClientRepository clientRepository;
 
     public ClientServiceImpl(ClientRepository clientRepository) {
@@ -115,7 +91,7 @@ public class ClientServiceImpl implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        Client client = clientRepository.findOne(clientId);
+        Client client = clientRepository.findByClientId(clientId);
         if (client == null) {
             throw new NoSuchClientException("No client with requested id: " + clientId);
         }
