@@ -1,5 +1,6 @@
-package hw.tests.oauth2
+package hw.tests.oauth2.login
 
+import hw.tests.oauth2.HwOauth2Spec;
 import hw.tests.oauth2.pages.ChangePasswordPage
 import hw.tests.oauth2.pages.LoginPage
 import hw.tests.oauth2.pages.TestPage

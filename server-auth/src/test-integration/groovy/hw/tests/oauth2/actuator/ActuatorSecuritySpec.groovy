@@ -1,6 +1,7 @@
-package hw.tests.oauth2
+package hw.tests.oauth2.actuator
 
 import hw.oauth2.entities.UserRepository
+import hw.tests.oauth2.HwOauth2Spec;
 import hw.tests.oauth2.pages.LoginPage
 import hw.tests.oauth2.utils.UserHelper
 import spock.lang.Unroll
