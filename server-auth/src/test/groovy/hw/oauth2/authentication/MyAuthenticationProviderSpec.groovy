@@ -148,7 +148,6 @@ class MyAuthenticationProviderSpec extends Specification {
         authenticationProvider.loginFailedBecauseOfBadCredentials(user, when)
 
         then:
-        thrown(BadCredentialsException)
         user.loginStatus.failedLoginAttempts == 2
         user.loginStatus.lastFailedLogin == when
     }

@@ -76,11 +76,11 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
         }
         if (authentication.getCredentials() == null) {
             LOGGER.debug("Authentication failed: no credentials provided");
-            loginFailedBecauseOfBadCredentials(user);
+            throw loginFailedBecauseOfBadCredentials(user);
         }
         if (!passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
             LOGGER.debug("Authentication failed: password does not match stored value");
-            loginFailedBecauseOfBadCredentials(user);
+            throw loginFailedBecauseOfBadCredentials(user);
         }
 
         Set<GrantedAuthority> authorities = user.getAuthorities();
@@ -91,14 +91,14 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
         return loginSuccessful(authentication, user, authorities);
     }
 
-    private void loginFailedBecauseOfBadCredentials(User user) {
-        loginFailedBecauseOfBadCredentials(user, Instant.now());
+    private BadCredentialsException loginFailedBecauseOfBadCredentials(User user) {
+        return loginFailedBecauseOfBadCredentials(user, Instant.now());
     }
 
     @VisibleForTesting
-    void loginFailedBecauseOfBadCredentials(User user, Instant when) {
+    BadCredentialsException loginFailedBecauseOfBadCredentials(User user, Instant when) {
         user.getLoginStatus().loginFailed(when);
-        throw new BadCredentialsException(
+        return new BadCredentialsException(
                 messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
     }
 
