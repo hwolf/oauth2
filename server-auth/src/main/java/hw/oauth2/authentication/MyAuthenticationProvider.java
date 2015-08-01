@@ -22,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
 import hw.oauth2.Roles;
@@ -75,15 +76,11 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
         }
         if (authentication.getCredentials() == null) {
             LOGGER.debug("Authentication failed: no credentials provided");
-            user.getLoginStatus().loginFailed(Instant.now());
-            throw new BadCredentialsException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+            loginFailedBecauseOfBadCredentials(user);
         }
         if (!passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
             LOGGER.debug("Authentication failed: password does not match stored value");
-            user.getLoginStatus().loginFailed(Instant.now());
-            throw new BadCredentialsException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+            loginFailedBecauseOfBadCredentials(user);
         }
 
         Set<GrantedAuthority> authorities = user.getAuthorities();
@@ -91,7 +88,29 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
             LOGGER.debug("User account credentials have expired");
             authorities = ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
         }
-        user.getLoginStatus().loginSuccessful(Instant.now());
+        return loginSuccessful(authentication, user, authorities);
+    }
+
+    private void loginFailedBecauseOfBadCredentials(User user) {
+        loginFailedBecauseOfBadCredentials(user, Instant.now());
+    }
+
+    @VisibleForTesting
+    void loginFailedBecauseOfBadCredentials(User user, Instant when) {
+        user.getLoginStatus().loginFailed(when);
+        throw new BadCredentialsException(
+                messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+    }
+
+    private Authentication loginSuccessful(Authentication authentication, User user,
+            Collection<GrantedAuthority> authorities) {
+        return loginSuccessful(authentication, user, authorities, Instant.now());
+    }
+
+    @VisibleForTesting
+    Authentication loginSuccessful(Authentication authentication, User user, Collection<GrantedAuthority> authorities,
+            Instant when) {
+        user.getLoginStatus().loginSuccessful(when);
         return createSuccessAuthentication(authentication.getPrincipal(), authentication, authorities);
     }
 
