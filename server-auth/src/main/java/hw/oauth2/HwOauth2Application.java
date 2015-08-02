@@ -49,6 +49,9 @@ public class HwOauth2Application extends ApplicationBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HwOauth2Application.class);
 
+    /**
+     * Log database URL to verify which database we use.
+     */
     @Autowired(required = false)
     public void setDataSourceProperties(DataSourceProperties properties) {
         LOGGER.info("Use database {}", properties.getUrl());
