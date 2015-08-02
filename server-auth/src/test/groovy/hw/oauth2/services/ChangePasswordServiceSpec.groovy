@@ -1,16 +1,17 @@
 package hw.oauth2.services
 
-import hw.oauth2.entities.User
-import hw.oauth2.entities.UserRepository
-
 import java.time.Instant
 
 import org.springframework.security.authentication.TestingAuthenticationToken
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.NoOpPasswordEncoder
-import org.springframework.validation.Errors
 
 import spock.lang.Specification
+
+import hw.oauth2.authentication.MyAuthenticationProvider
+import hw.oauth2.entities.User
+import hw.oauth2.entities.UserRepository
 
 
 class ChangePasswordServiceSpec extends Specification {
@@ -19,38 +20,33 @@ class ChangePasswordServiceSpec extends Specification {
     static final PASSWORD = "password"
 
     UserRepository userRepository = Mock()
-    ChangePasswordService service = new ChangePasswordService(userRepository, NoOpPasswordEncoder.INSTANCE)
+    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(NoOpPasswordEncoder.INSTANCE, userRepository)
+    ChangePasswordService service = new ChangePasswordService(userRepository, authenticationProvider, NoOpPasswordEncoder.INSTANCE)
 
     def setup() {
         SecurityContextHolder.context.authentication = new TestingAuthenticationToken(USER_ID, PASSWORD, [])
     }
 
-    def "If user id does not match with authentication token then signal an error"() {
-        given:
-        Errors errors = Mock()
+    def "If user id does not match with authentication token then a change password exception will be thrown"() {
 
         when:
-        service.changePassword("other user id", PASSWORD, "new passsword", errors)
+        service.changePassword("other user id", PASSWORD, "new passsword")
 
         then:
-        1 * errors.reject("BadCredentials", _)
+        thrown(ChangePasswordException)
     }
 
-    def "If user does not exists in user repository then signal an error"() {
-        given:
-        Errors errors = Mock()
+    def "If user does not exists in user repository then a change password exception will be thrown"() {
 
         when:
         userRepository.findByUserId(USER_ID) >> null
-        service.changePassword(USER_ID, PASSWORD, "new passsword", errors)
+        service.changePassword(USER_ID, PASSWORD, "new passsword")
 
         then:
-        1 * errors.reject("BadCredentials", _)
+        thrown(ChangePasswordException)
     }
 
-    def "If user is locked in user repository then signal an error"() {
-        given:
-        Errors errors = Mock()
+    def "If user cannot authenticate then an authentication exception will be thrown"() {
 
         when:
         User user = new User(userId: USER_ID, password: PASSWORD)
@@ -58,70 +54,41 @@ class ChangePasswordServiceSpec extends Specification {
             user.loginStatus.loginFailed(Instant.now())
         }
         userRepository.findByUserId(USER_ID) >> user
-        service.changePassword(USER_ID, PASSWORD, "new passsword", errors)
+        service.changePassword(USER_ID, PASSWORD, "new passsword")
 
         then:
-        1 * errors.reject("UserAccountLocked", _)
-    }
-
-    def "If user is not enabled in user repository then signal an error"() {
-        given:
-        Errors errors = Mock()
-
-        when:
-        userRepository.findByUserId(USER_ID) >> new User(userId: USER_ID, password: null)
-        service.changePassword(USER_ID, PASSWORD, "new passsword", errors)
-
-        then:
-        1 * errors.reject("UserDisabled", _)
-    }
-
-    def "If password does not match with password from user repository then signal an error"() {
-        given:
-        Errors errors = Mock()
-
-        when:
-        userRepository.findByUserId(USER_ID) >> new User(userId: USER_ID, password: "another password")
-        service.changePassword(USER_ID, PASSWORD, "new passsword", errors)
-
-        then:
-        1 * errors.reject("BadCredentials", _)
+        thrown(AuthenticationException)
     }
 
     def "If all checks are passed then the password should changed"() {
         given:
-        Errors errors = Mock()
         String newPassword = "new password"
 
         when:
         User user = new User(userId: USER_ID, password: PASSWORD)
         userRepository.findByUserId(USER_ID) >> user
-        service.changePassword(USER_ID, PASSWORD, newPassword, errors)
+        service.changePassword(USER_ID, PASSWORD, newPassword)
 
         then:
         user.password == newPassword
     }
 
     def "If all checks are passed then the passwordExpiresAt should be in the future "() {
-        given:
-        Errors errors = Mock()
 
         when:
         User user = new User(userId: USER_ID, password: PASSWORD)
         userRepository.findByUserId(USER_ID) >> user
-        service.changePassword(USER_ID, PASSWORD, "new password", errors)
+        service.changePassword(USER_ID, PASSWORD, "new password")
 
         then:
         user.passwordExpiresAt.isAfter(Instant.now())
     }
 
     def "If all checks are passed then the SecurityContextHolder should be cleared"() {
-        given:
-        Errors errors = Mock()
 
         when:
         userRepository.findByUserId(USER_ID) >> new User(userId: USER_ID, password: PASSWORD)
-        service.changePassword(USER_ID, PASSWORD, "new password", errors)
+        service.changePassword(USER_ID, PASSWORD, "new password")
 
         then:
         SecurityContextHolder.context.authentication == null

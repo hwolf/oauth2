@@ -2,7 +2,6 @@ package hw.oauth2.authentication;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableSet;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import hw.oauth2.Roles;
@@ -69,21 +67,38 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
         try {
-            Authentication result = authenticate(authentication, user);
+            authenticate(user, authentication.getCredentials());
             user.getLoginStatus().loginSuccessful(Instant.now());
-            return result;
+            Set<GrantedAuthority> authorities = mapAuthorities(user);
+            return createSuccessAuthentication(authentication.getPrincipal(), authentication, authorities);
         } catch (BadCredentialsException ex) {
             user.getLoginStatus().loginFailed(Instant.now());
             throw ex;
         }
     }
 
-    public Authentication authenticate(Authentication authentication, User user) throws AuthenticationException {
-        checkNotNull(authentication);
+    protected Set<GrantedAuthority> mapAuthorities(User user) {
+        Set<GrantedAuthority> authorities = user.getAuthorities();
+        if (user.isPasswordExpired()) {
+            LOGGER.debug("User {}: Credentials have expired", user.getUserId());
+            authorities = ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
+        }
+        return authorities;
+    }
+
+    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
+            Collection<GrantedAuthority> authorities) {
+
+        UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(principal,
+                authentication.getCredentials(), authorities);
+        result.setDetails(authentication.getDetails());
+        return result;
+    }
+
+    public void authenticate(User user, Object credentials) throws AuthenticationException {
         checkNotNull(user);
 
-        String userId = authentication.getName();
-        checkArgument(Objects.equals(userId, user.getUserId()));
+        String userId = user.getUserId();
         if (!user.isEnabled()) {
             LOGGER.debug("User {} is disabled", userId);
             throw new DisabledException(
@@ -94,31 +109,15 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
             throw new LockedException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"));
         }
-        if (authentication.getCredentials() == null) {
+        if (credentials == null) {
             LOGGER.debug("Authentication for user {} failed: No credentials provided", userId);
             throw new BadCredentialsException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
-        if (!passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
+        if (!passwordEncoder.matches(credentials.toString(), user.getPassword())) {
             LOGGER.debug("Authentication for user {} failed: Password does not match stored value", userId);
             throw new BadCredentialsException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
-
-        Set<GrantedAuthority> authorities = user.getAuthorities();
-        if (user.isPasswordExpired()) {
-            LOGGER.debug("User {}: Credentials have expired", userId);
-            authorities = ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
-        }
-        return createSuccessAuthentication(authentication.getPrincipal(), authentication, authorities);
-    }
-
-    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
-            Collection<GrantedAuthority> authorities) {
-
-        UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(principal,
-                authentication.getCredentials(), authorities);
-        result.setDetails(authentication.getDetails());
-        return result;
     }
 }

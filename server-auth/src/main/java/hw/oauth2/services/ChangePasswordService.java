@@ -5,13 +5,14 @@ import java.time.temporal.ChronoUnit;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
 
 import com.google.common.base.Objects;
 
+import hw.oauth2.authentication.MyAuthenticationProvider;
 import hw.oauth2.entities.User;
 import hw.oauth2.entities.UserRepository;
 
@@ -19,64 +20,40 @@ import hw.oauth2.entities.UserRepository;
 public class ChangePasswordService {
 
     private final UserRepository userRepository;
+    private final MyAuthenticationProvider authenticationProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public ChangePasswordService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public ChangePasswordService(UserRepository userRepository, MyAuthenticationProvider authenticationProvider,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.authenticationProvider = authenticationProvider;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_AUTHENTICATED', 'ROLE_MUST_CHANGE_PASSWORD')")
-    public void changePassword(String userId, String oldPassword, String newPassword, Errors errors) {
+    public void changePassword(String userId, String oldPassword, String newPassword)
+            throws ChangePasswordException, AuthenticationException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Step 1: Check user id against authenticated user
         if (!Objects.equal(userId, authentication.getName())) {
-            errors.reject("BadCredentials", "Bad credentials");
-            return;
+            throw new ChangePasswordException("Invalid user id");
         }
 
         // Step 2: Search user in repository
-        User user = loadUserByUserId(userId, errors);
+        User user = userRepository.findByUserId(userId);
         if (user == null) {
-            return;
+            throw new ChangePasswordException("User not found");
         }
 
         // Step 3: Validate if old password is correct.
-        if (!authenticate(user, oldPassword, errors)) {
-            return;
-        }
+        authenticationProvider.authenticate(user, oldPassword);
 
         // Step 4: Validate new password.
         changePassword(user, newPassword);
 
         SecurityContextHolder.getContext().setAuthentication(null);
-    }
-
-    private User loadUserByUserId(String userId, Errors errors) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            errors.reject("BadCredentials", "Bad credentials");
-            return null;
-        }
-        if (user.isAccountLocked()) {
-            errors.reject("UserAccountLocked", "User account is locked");
-            return null;
-        }
-        if (!user.isEnabled()) {
-            errors.reject("UserDisabled", "User is disabled");
-            return null;
-        }
-        return user;
-    }
-
-    private boolean authenticate(User user, String password, Errors errors) {
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            errors.reject("BadCredentials", "Bad credentials");
-            return false;
-        }
-        return true;
     }
 
     private void changePassword(User user, String newPassword) {

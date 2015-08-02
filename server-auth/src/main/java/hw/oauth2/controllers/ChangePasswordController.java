@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.passay.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import hw.oauth2.Urls;
+import hw.oauth2.services.ChangePasswordException;
 import hw.oauth2.services.ChangePasswordService;
 
 @Controller
@@ -61,7 +63,13 @@ public class ChangePasswordController {
         if (result.hasErrors()) {
             return "change-password";
         }
-        changePasswordService.changePassword(form.getUserId(), form.getOldPassword(), form.getNewPassword(), result);
+        try {
+            changePasswordService.changePassword(form.getUserId(), form.getOldPassword(), form.getNewPassword());
+        } catch (ChangePasswordException ex) {
+            result.rejectValue("userId", ex.getMessage(), ex.getLocalizedMessage());
+        } catch (AuthenticationException ex) {
+            result.reject(ex.getMessage(), ex.getLocalizedMessage());
+        }
         if (result.hasErrors()) {
             form.clearPasswords();
             return "change-password";

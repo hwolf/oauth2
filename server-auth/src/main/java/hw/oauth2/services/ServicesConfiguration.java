@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.google.common.collect.ImmutableList;
 
+import hw.oauth2.authentication.MyAuthenticationProvider;
 import hw.oauth2.entities.UserRepository;
 
 @Configuration
@@ -23,6 +24,9 @@ public class ServicesConfiguration {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MyAuthenticationProvider authenticationProvider;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -42,6 +46,6 @@ public class ServicesConfiguration {
 
     @Bean
     public ChangePasswordService changePasswordService() {
-        return new ChangePasswordService(userRepository, passwordEncoder);
+        return new ChangePasswordService(userRepository, authenticationProvider, passwordEncoder);
     }
 }
