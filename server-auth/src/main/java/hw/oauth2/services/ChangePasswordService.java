@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Objects;
 
-import hw.oauth2.authentication.MyAuthenticationProvider;
+import hw.oauth2.authentication.UserAuthenticationStrategy;
 import hw.oauth2.entities.User;
 import hw.oauth2.entities.UserRepository;
 
@@ -20,13 +20,13 @@ import hw.oauth2.entities.UserRepository;
 public class ChangePasswordService {
 
     private final UserRepository userRepository;
-    private final MyAuthenticationProvider authenticationProvider;
+    private final UserAuthenticationStrategy authenticationStrategy;
     private final PasswordEncoder passwordEncoder;
 
-    public ChangePasswordService(UserRepository userRepository, MyAuthenticationProvider authenticationProvider,
+    public ChangePasswordService(UserRepository userRepository, UserAuthenticationStrategy authenticationStrategy,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.authenticationProvider = authenticationProvider;
+        this.authenticationStrategy = authenticationStrategy;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,7 +48,7 @@ public class ChangePasswordService {
         }
 
         // Step 3: Validate if old password is correct.
-        authenticationProvider.authenticate(user, oldPassword);
+        authenticationStrategy.authenticate(user, oldPassword);
 
         // Step 4: Validate new password.
         changePassword(user, newPassword);

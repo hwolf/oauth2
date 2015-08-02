@@ -9,7 +9,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder
 
 import spock.lang.Specification
 
-import hw.oauth2.authentication.MyAuthenticationProvider
+import hw.oauth2.authentication.DefaultUserAuthenticationStrategy
+import hw.oauth2.authentication.UserAuthenticationStrategy
 import hw.oauth2.entities.User
 import hw.oauth2.entities.UserRepository
 
@@ -20,8 +21,8 @@ class ChangePasswordServiceSpec extends Specification {
     static final PASSWORD = "password"
 
     UserRepository userRepository = Mock()
-    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(NoOpPasswordEncoder.INSTANCE, userRepository)
-    ChangePasswordService service = new ChangePasswordService(userRepository, authenticationProvider, NoOpPasswordEncoder.INSTANCE)
+    UserAuthenticationStrategy authenticationStrategy = new DefaultUserAuthenticationStrategy(NoOpPasswordEncoder.INSTANCE)
+    ChangePasswordService service = new ChangePasswordService(userRepository, authenticationStrategy, NoOpPasswordEncoder.INSTANCE)
 
     def setup() {
         SecurityContextHolder.context.authentication = new TestingAuthenticationToken(USER_ID, PASSWORD, [])

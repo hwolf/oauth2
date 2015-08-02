@@ -26,7 +26,8 @@ class MyAuthenticationProviderSpec extends Specification {
     User user = new User(userId: USER_ID, password: PASSWORD, passwordExpiresAt: Instant.now().plusSeconds(3600))
 
     UserRepository userRepository = Mock() { findByUserId(USER_ID) >> user }
-    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(NoOpPasswordEncoder.INSTANCE, userRepository)
+    UserAuthenticationStrategy authenticationStrategy = new DefaultUserAuthenticationStrategy(NoOpPasswordEncoder.INSTANCE)
+    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(userRepository, authenticationStrategy)
 
     static class MyUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {}
 
