@@ -1,6 +1,9 @@
 package hw.oauth2;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -43,6 +46,13 @@ import hw.web.ApplicationBase;
 
 @EnableResourceServer
 public class HwOauth2Application extends ApplicationBase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HwOauth2Application.class);
+
+    @Autowired(required = false)
+    public void setDataSourceProperties(DataSourceProperties properties) {
+        LOGGER.info("Use database {}", properties.getUrl());
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
