@@ -2,6 +2,7 @@ package hw.oauth2.authentication;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -22,14 +23,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import hw.oauth2.Roles;
 import hw.oauth2.entities.User;
 import hw.oauth2.entities.UserRepository;
 
-// TODO: Better name, unit tests
+// TODO: Better name
 public class MyAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyAuthenticationProvider.class);
@@ -57,60 +60,56 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
     @Override
     @Transactional(noRollbackFor = AuthenticationException.class)
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        checkNotNull(authentication);
         String userId = authentication.getName();
         User user = userRepository.findByUserId(userId);
         if (user == null) {
-            LOGGER.debug("User '" + userId + "' not found");
+            LOGGER.debug("User {} not found", userId);
             throw new BadCredentialsException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
+        try {
+            Authentication result = authenticate(authentication, user);
+            user.getLoginStatus().loginSuccessful(Instant.now());
+            return result;
+        } catch (BadCredentialsException ex) {
+            user.getLoginStatus().loginFailed(Instant.now());
+            throw ex;
+        }
+    }
+
+    public Authentication authenticate(Authentication authentication, User user) throws AuthenticationException {
+        checkNotNull(authentication);
+        checkNotNull(user);
+
+        String userId = authentication.getName();
+        checkArgument(Objects.equals(userId, user.getUserId()));
         if (!user.isEnabled()) {
-            LOGGER.debug("User account is disabled");
+            LOGGER.debug("User {} is disabled", userId);
             throw new DisabledException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"));
         }
         if (user.isAccountLocked()) {
-            LOGGER.debug("User account is locked");
+            LOGGER.debug("User account {} is locked", userId);
             throw new LockedException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"));
         }
         if (authentication.getCredentials() == null) {
-            LOGGER.debug("Authentication failed: no credentials provided");
-            throw loginFailedBecauseOfBadCredentials(user);
+            LOGGER.debug("Authentication for user {} failed: No credentials provided", userId);
+            throw new BadCredentialsException(
+                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
         if (!passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
-            LOGGER.debug("Authentication failed: password does not match stored value");
-            throw loginFailedBecauseOfBadCredentials(user);
+            LOGGER.debug("Authentication for user {} failed: Password does not match stored value", userId);
+            throw new BadCredentialsException(
+                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
         Set<GrantedAuthority> authorities = user.getAuthorities();
         if (user.isPasswordExpired()) {
-            LOGGER.debug("User account credentials have expired");
+            LOGGER.debug("User {}: Credentials have expired", userId);
             authorities = ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
         }
-        return loginSuccessful(authentication, user, authorities);
-    }
-
-    private BadCredentialsException loginFailedBecauseOfBadCredentials(User user) {
-        return loginFailedBecauseOfBadCredentials(user, Instant.now());
-    }
-
-    @VisibleForTesting
-    BadCredentialsException loginFailedBecauseOfBadCredentials(User user, Instant when) {
-        user.getLoginStatus().loginFailed(when);
-        return new BadCredentialsException(
-                messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-    }
-
-    private Authentication loginSuccessful(Authentication authentication, User user,
-            Collection<GrantedAuthority> authorities) {
-        return loginSuccessful(authentication, user, authorities, Instant.now());
-    }
-
-    @VisibleForTesting
-    Authentication loginSuccessful(Authentication authentication, User user, Collection<GrantedAuthority> authorities,
-            Instant when) {
-        user.getLoginStatus().loginSuccessful(when);
         return createSuccessAuthentication(authentication.getPrincipal(), authentication, authorities);
     }
 

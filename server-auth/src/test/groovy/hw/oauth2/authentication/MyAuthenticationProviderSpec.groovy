@@ -1,9 +1,5 @@
 package hw.oauth2.authentication
 
-import hw.oauth2.Roles
-import hw.oauth2.entities.User
-import hw.oauth2.entities.UserRepository
-
 import java.time.Instant
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
@@ -18,9 +14,18 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder
 
 import spock.lang.Specification
 
+import hw.oauth2.Roles
+import hw.oauth2.entities.User
+import hw.oauth2.entities.UserRepository
+
 class MyAuthenticationProviderSpec extends Specification {
 
-    UserRepository userRepository = Mock()
+    static String USER_ID = "a user id"
+    static String PASSWORD = "password"
+
+    User user = new User(userId: USER_ID, password: PASSWORD, passwordExpiresAt: Instant.now().plusSeconds(3600))
+
+    UserRepository userRepository = Mock() { findByUserId(USER_ID) >> user }
     MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(NoOpPasswordEncoder.INSTANCE, userRepository)
 
     static class MyUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {}
@@ -54,11 +59,10 @@ class MyAuthenticationProviderSpec extends Specification {
 
     def "if user is not enabled, a DisabledException exception will be thrown"() {
         given:
-        String userId = "a user id"
-        userRepository.findByUserId(userId) >> new User(userId: userId, password: null)
+        user.password = null
 
         when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userId, "password"))
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
 
         then:
         thrown(DisabledException)
@@ -66,15 +70,12 @@ class MyAuthenticationProviderSpec extends Specification {
 
     def "if user account is locked, a LockedException exception will be thrown"() {
         given:
-        String userId = "a user id"
-        User user = new User(userId: userId, password: "password")
         while (!user.accountLocked) {
             user.loginStatus.loginFailed(Instant.now())
         }
-        userRepository.findByUserId(userId) >> user
 
         when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userId, "password"))
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
 
         then:
         thrown(LockedException)
@@ -82,12 +83,10 @@ class MyAuthenticationProviderSpec extends Specification {
 
     def "if no password is passed, a BadCredentials exception will be thrown"() {
         given:
-        String userId = "a user id"
-        String passwordForAuthentifcation = null
-        userRepository.findByUserId(userId) >> new User(userId: userId, password: "password")
+        String missingPassword = null
 
         when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userId, passwordForAuthentifcation))
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, missingPassword))
 
         then:
         thrown(BadCredentialsException)
@@ -95,11 +94,10 @@ class MyAuthenticationProviderSpec extends Specification {
 
     def "if the password does match, a BadCredentials exception will be thrown"() {
         given:
-        String userId = "a user id"
-        userRepository.findByUserId(userId) >> new User(userId: userId, password: "password xxx")
+        String wrongPassword = "wrong password"
 
         when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userId, "password xyz"))
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, wrongPassword))
 
         then:
         thrown(BadCredentialsException)
@@ -107,13 +105,11 @@ class MyAuthenticationProviderSpec extends Specification {
 
     def "if the password is expired, the user is authenticated successful but has only role MUST_PASSWORD_CHANGE"() {
         given:
-        String userId = "a user id"
-        String password = "password"
-        userRepository.findByUserId(userId) >> new User(userId: userId, password: password, passwordExpiresAt: Instant.now())
+        user.passwordExpiresAt = Instant.now()
 
         when:
         Authentication authentication =
-                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userId, password))
+                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
 
         then:
         authentication.authenticated
@@ -123,14 +119,10 @@ class MyAuthenticationProviderSpec extends Specification {
     }
 
     def "if the password is not expired, the user is authenticated successful"() {
-        given:
-        String userId = "a user id"
-        String password = "password"
-        userRepository.findByUserId(userId) >> new User(userId: userId, password: password, passwordExpiresAt: Instant.now().plusSeconds(3600))
 
         when:
         Authentication authentication =
-                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userId, password))
+                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
 
         then:
         authentication.authenticated
@@ -140,32 +132,28 @@ class MyAuthenticationProviderSpec extends Specification {
     def "check login status after login failed"() {
 
         given:
-        User user = new User()
         user.loginStatus.failedLoginAttempts = 1
-        Instant when = Instant.now()
 
         when:
-        authenticationProvider.loginFailedBecauseOfBadCredentials(user, when)
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, "wrong password"))
 
         then:
+        thrown(BadCredentialsException)
         user.loginStatus.failedLoginAttempts == 2
-        user.loginStatus.lastFailedLogin == when
+        !user.loginStatus.lastFailedLogin.isAfter(Instant.now())
     }
 
     def "check login status after successful login"() {
 
         given:
-        Authentication authentication = new UsernamePasswordAuthenticationToken("userId", "password")
-        User user = new User()
         user.loginStatus.failedLoginAttempts = 1
-        Instant when = Instant.now()
 
         when:
-        authenticationProvider.loginSuccessful(authentication, user, [], when)
+        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
 
         then:
         user.loginStatus.failedLoginAttempts == 0
-        user.loginStatus.lastSuccessfulLogin == when
+        !user.loginStatus.lastSuccessfulLogin.isAfter(Instant.now())
     }
 
     def "check authentication object"() {

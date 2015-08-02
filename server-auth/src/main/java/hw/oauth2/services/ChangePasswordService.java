@@ -19,7 +19,6 @@ import hw.oauth2.entities.UserRepository;
 public class ChangePasswordService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     public ChangePasswordService(UserRepository userRepository, PasswordEncoder passwordEncoder) {

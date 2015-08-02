@@ -6,11 +6,9 @@ import org.springframework.data.repository.Repository;
 
 public interface UserRepository extends Repository<User, String> {
 
-    User findOne(String userId);
+    User findByUserId(String userId);
 
     Page<User> findAll(Pageable page);
-
-    User findByUserId(String userId);
 
     User save(User user);
 
