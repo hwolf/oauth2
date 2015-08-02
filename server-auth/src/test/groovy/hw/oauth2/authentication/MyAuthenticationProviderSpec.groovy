@@ -25,7 +25,6 @@ class MyAuthenticationProviderSpec extends Specification {
 
     UserAuthenticationStrategy authenticationStrategy = Mock()
     UserRepository userRepository = Mock() { findByUserId(USER_ID) >> user }
-
     MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(userRepository, authenticationStrategy)
 
     static class MyUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {}
@@ -67,41 +66,6 @@ class MyAuthenticationProviderSpec extends Specification {
         then:
         thrown(AuthenticationException)
     }
-
-    //    def "if user account is locked, a LockedException exception will be thrown"() {
-    //        given:
-    //        while (!user.accountLocked) {
-    //            user.loginStatus.loginFailed(Instant.now())
-    //        }
-    //
-    //        when:
-    //        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
-    //
-    //        then:
-    //        thrown(LockedException)
-    //    }
-    //
-    //    def "if no password is passed, a BadCredentials exception will be thrown"() {
-    //        given:
-    //        String missingPassword = null
-    //
-    //        when:
-    //        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, missingPassword))
-    //
-    //        then:
-    //        thrown(BadCredentialsException)
-    //    }
-    //
-    //    def "if the password does match, a BadCredentials exception will be thrown"() {
-    //        given:
-    //        String wrongPassword = "wrong password"
-    //
-    //        when:
-    //        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, wrongPassword))
-    //
-    //        then:
-    //        thrown(BadCredentialsException)
-    //    }
 
     def "if the password is expired, the user is authenticated successful but has only role MUST_PASSWORD_CHANGE"() {
         given:
