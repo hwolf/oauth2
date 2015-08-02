@@ -11,15 +11,12 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableSet;
@@ -35,14 +32,14 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyAuthenticationProvider.class);
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserAuthenticationStrategy authenticationStrategy;
 
     private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public MyAuthenticationProvider(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
+    public MyAuthenticationProvider(UserRepository userRepository, UserAuthenticationStrategy authenticationStrategy) {
         this.userRepository = userRepository;
+        this.authenticationStrategy = authenticationStrategy;
     }
 
     @Override
@@ -67,7 +64,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
         try {
-            authenticate(user, authentication.getCredentials());
+            authenticationStrategy.authenticate(user, authentication.getCredentials());
             user.getLoginStatus().loginSuccessful(Instant.now());
             Set<GrantedAuthority> authorities = mapAuthorities(user);
             return createSuccessAuthentication(authentication.getPrincipal(), authentication, authorities);
@@ -93,31 +90,5 @@ public class MyAuthenticationProvider implements AuthenticationProvider, Message
                 authentication.getCredentials(), authorities);
         result.setDetails(authentication.getDetails());
         return result;
-    }
-
-    public void authenticate(User user, Object credentials) throws AuthenticationException {
-        checkNotNull(user);
-
-        String userId = user.getUserId();
-        if (!user.isEnabled()) {
-            LOGGER.debug("User {} is disabled", userId);
-            throw new DisabledException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"));
-        }
-        if (user.isAccountLocked()) {
-            LOGGER.debug("User account {} is locked", userId);
-            throw new LockedException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"));
-        }
-        if (credentials == null) {
-            LOGGER.debug("Authentication for user {} failed: No credentials provided", userId);
-            throw new BadCredentialsException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-        }
-        if (!passwordEncoder.matches(credentials.toString(), user.getPassword())) {
-            LOGGER.debug("Authentication for user {} failed: Password does not match stored value", userId);
-            throw new BadCredentialsException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-        }
     }
 }

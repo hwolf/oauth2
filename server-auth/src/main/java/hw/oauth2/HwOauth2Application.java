@@ -26,8 +26,10 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import hw.oauth2.authentication.DefaultUserAuthenticationStrategy;
 import hw.oauth2.authentication.MyAuthenticationProvider;
 import hw.oauth2.authentication.MyAuthenticationSuccessHandler;
+import hw.oauth2.authentication.UserAuthenticationStrategy;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
 import hw.oauth2.authentication.tokens.TokenServiceImpl;
@@ -74,8 +76,13 @@ public class HwOauth2Application extends ApplicationBase {
         }
 
         @Bean
+        public UserAuthenticationStrategy authenticationStrategy() {
+            return new DefaultUserAuthenticationStrategy(passwordEncoder);
+        }
+
+        @Bean
         public AuthenticationProvider authenticationProvider() {
-            return new MyAuthenticationProvider(passwordEncoder, userRepository);
+            return new MyAuthenticationProvider(userRepository, authenticationStrategy());
         }
     }
 

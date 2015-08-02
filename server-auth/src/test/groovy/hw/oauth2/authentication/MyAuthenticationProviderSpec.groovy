@@ -4,13 +4,11 @@ import java.time.Instant
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.authentication.DisabledException
-import org.springframework.security.authentication.LockedException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.crypto.password.NoOpPasswordEncoder
 
 import spock.lang.Specification
 
@@ -25,8 +23,10 @@ class MyAuthenticationProviderSpec extends Specification {
 
     User user = new User(userId: USER_ID, password: PASSWORD, passwordExpiresAt: Instant.now().plusSeconds(3600))
 
+    UserAuthenticationStrategy authenticationStrategy = Mock()
     UserRepository userRepository = Mock() { findByUserId(USER_ID) >> user }
-    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(NoOpPasswordEncoder.INSTANCE, userRepository)
+
+    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(userRepository, authenticationStrategy)
 
     static class MyUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {}
 
@@ -57,51 +57,51 @@ class MyAuthenticationProviderSpec extends Specification {
         thrown(BadCredentialsException)
     }
 
-    def "if user is not enabled, a DisabledException exception will be thrown"() {
+    def "if user is not authenticated, a AuthenticationException exception will be thrown"() {
         given:
-        user.password = null
+        authenticationStrategy.authenticate(_, _) >> { throw new BadCredentialsException("BadCredentials") }
 
         when:
         authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
 
         then:
-        thrown(DisabledException)
+        thrown(AuthenticationException)
     }
 
-    def "if user account is locked, a LockedException exception will be thrown"() {
-        given:
-        while (!user.accountLocked) {
-            user.loginStatus.loginFailed(Instant.now())
-        }
-
-        when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
-
-        then:
-        thrown(LockedException)
-    }
-
-    def "if no password is passed, a BadCredentials exception will be thrown"() {
-        given:
-        String missingPassword = null
-
-        when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, missingPassword))
-
-        then:
-        thrown(BadCredentialsException)
-    }
-
-    def "if the password does match, a BadCredentials exception will be thrown"() {
-        given:
-        String wrongPassword = "wrong password"
-
-        when:
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, wrongPassword))
-
-        then:
-        thrown(BadCredentialsException)
-    }
+    //    def "if user account is locked, a LockedException exception will be thrown"() {
+    //        given:
+    //        while (!user.accountLocked) {
+    //            user.loginStatus.loginFailed(Instant.now())
+    //        }
+    //
+    //        when:
+    //        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, PASSWORD))
+    //
+    //        then:
+    //        thrown(LockedException)
+    //    }
+    //
+    //    def "if no password is passed, a BadCredentials exception will be thrown"() {
+    //        given:
+    //        String missingPassword = null
+    //
+    //        when:
+    //        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, missingPassword))
+    //
+    //        then:
+    //        thrown(BadCredentialsException)
+    //    }
+    //
+    //    def "if the password does match, a BadCredentials exception will be thrown"() {
+    //        given:
+    //        String wrongPassword = "wrong password"
+    //
+    //        when:
+    //        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, wrongPassword))
+    //
+    //        then:
+    //        thrown(BadCredentialsException)
+    //    }
 
     def "if the password is expired, the user is authenticated successful but has only role MUST_PASSWORD_CHANGE"() {
         given:
@@ -133,6 +133,7 @@ class MyAuthenticationProviderSpec extends Specification {
 
         given:
         user.loginStatus.failedLoginAttempts = 1
+        authenticationStrategy.authenticate(_, _) >> { throw new BadCredentialsException("BadCredentials") }
 
         when:
         authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(USER_ID, "wrong password"))
