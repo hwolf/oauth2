@@ -28,9 +28,9 @@ dependencies {
     }
     //runtime "mysql:mysql-connector-java:5.1.36"
     
-    testCompile "org.gebish:geb-spock:0.10.0"
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.46.0" 
-    testCompile "org.seleniumhq.selenium:selenium-support:2.46.0"
+    testCompile "org.gebish:geb-spock:0.12.1"
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.47.1" 
+    testCompile "org.seleniumhq.selenium:selenium-support:2.47.1"
     testCompile "org.springframework.cloud:spring-cloud-starter-security:1.0.3.RELEASE"
 }
 
