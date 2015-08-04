@@ -27,17 +27,16 @@ import hw.oauth2.Roles;
 import hw.oauth2.entities.User;
 import hw.oauth2.entities.UserRepository;
 
-// TODO: Better name
-public class MyAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
+public class UserAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MyAuthenticationProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticationProvider.class);
 
     private final UserRepository userRepository;
     private final UserAuthenticationStrategy authenticationStrategy;
 
     private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public MyAuthenticationProvider(UserRepository userRepository, UserAuthenticationStrategy authenticationStrategy) {
+    public UserAuthenticationProvider(UserRepository userRepository, UserAuthenticationStrategy authenticationStrategy) {
         this.userRepository = userRepository;
         this.authenticationStrategy = authenticationStrategy;
     }

@@ -16,7 +16,7 @@ import hw.oauth2.Roles
 import hw.oauth2.entities.User
 import hw.oauth2.entities.UserRepository
 
-class MyAuthenticationProviderSpec extends Specification {
+class UserAuthenticationProviderSpec extends Specification {
 
     static String USER_ID = "a user id"
     static String PASSWORD = "password"
@@ -25,7 +25,7 @@ class MyAuthenticationProviderSpec extends Specification {
 
     UserAuthenticationStrategy authenticationStrategy = Mock()
     UserRepository userRepository = Mock() { findByUserId(USER_ID) >> user }
-    MyAuthenticationProvider authenticationProvider = new MyAuthenticationProvider(userRepository, authenticationStrategy)
+    UserAuthenticationProvider authenticationProvider = new UserAuthenticationProvider(userRepository, authenticationStrategy)
 
     static class MyUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {}
 

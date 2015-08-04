@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import hw.oauth2.authentication.DefaultUserAuthenticationStrategy;
-import hw.oauth2.authentication.MyAuthenticationProvider;
+import hw.oauth2.authentication.UserAuthenticationProvider;
 import hw.oauth2.authentication.MyAuthenticationSuccessHandler;
 import hw.oauth2.authentication.UserAuthenticationStrategy;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
@@ -95,7 +95,7 @@ public class HwOauth2Application extends ApplicationBase {
 
         @Bean
         public AuthenticationProvider authenticationProvider() {
-            return new MyAuthenticationProvider(userRepository, authenticationStrategy());
+            return new UserAuthenticationProvider(userRepository, authenticationStrategy());
         }
     }
 
