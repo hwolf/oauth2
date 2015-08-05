@@ -1,9 +1,5 @@
 package hw.web;
 
-import static org.springframework.boot.ansi.AnsiElement.DEFAULT;
-import static org.springframework.boot.ansi.AnsiElement.FAINT;
-import static org.springframework.boot.ansi.AnsiElement.GREEN;
-
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -14,12 +10,17 @@ import org.springframework.core.SpringVersion;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
+import static org.springframework.boot.ansi.AnsiElement.DEFAULT;
+import static org.springframework.boot.ansi.AnsiElement.FAINT;
+import static org.springframework.boot.ansi.AnsiElement.GREEN;
+
 import com.github.lalyos.jfiglet.FigletFont;
 import com.google.common.base.Joiner;
 
 /**
- * Generates a Spring Boot banner by using {@linkplain https://github.com/lalyos/jfiglet}. The
- * banner shows also the Spring version, Spring Boot version, and the active profiles.
+ * Generates a Spring Boot banner by using
+ * <a href="https://github.com/lalyos/jfiglet">https://github.com/lalyos/jfiglet</a>. The banner
+ * shows also the Spring version, Spring Boot version, and the active profiles.
  */
 public class GeneratedBanner implements Banner {
 
