@@ -31,8 +31,3 @@ spring:
       userAuthorizationUri: http://localhost:9999/uaa/oauth/authorize
     resource:
       userInfoUri: http://localhost:9999/uaa/user
-
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
-#    org.springframework.web: DEBUG
