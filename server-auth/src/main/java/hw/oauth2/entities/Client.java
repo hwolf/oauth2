@@ -46,6 +46,9 @@ public class Client {
     }
 
     public Collection<Entry> getEntries() {
+        if (entries == null) {
+            return ImmutableSet.of();
+        }
         return ImmutableSet.copyOf(entries);
     }
 

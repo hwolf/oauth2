@@ -8,6 +8,8 @@ import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import hw.oauth2.entities.Client;
 import hw.oauth2.entities.ClientRepository;
 import hw.oauth2.entities.Entry;
@@ -60,7 +62,7 @@ public class ClientServiceImpl implements ClientDetailsService {
 
             @Override
             void setValue(String value, ClientDetailsBuilder user) {
-                user.withAuthorizedGrantType(value);
+                user.withAutoApprovedScope(value);
             }
         },
 
@@ -104,7 +106,8 @@ public class ClientServiceImpl implements ClientDetailsService {
         return builder.build();
     }
 
-    private Consumer<? super Entry> mapEntry(ClientDetailsBuilder builder) {
+    @VisibleForTesting
+    Consumer<? super Entry> mapEntry(ClientDetailsBuilder builder) {
         return entry -> findMapper(entry.getName()).setValue(entry.getData(), builder);
     }
 
