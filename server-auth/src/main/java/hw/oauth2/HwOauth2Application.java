@@ -4,9 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.ErrorPage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,8 +35,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import hw.oauth2.authentication.DefaultUserAuthenticationStrategy;
-import hw.oauth2.authentication.UserAuthenticationProvider;
 import hw.oauth2.authentication.MyAuthenticationSuccessHandler;
+import hw.oauth2.authentication.UserAuthenticationProvider;
 import hw.oauth2.authentication.UserAuthenticationStrategy;
 import hw.oauth2.authentication.approvals.ApprovalServiceImpl;
 import hw.oauth2.authentication.clients.ClientServiceImpl;
@@ -71,6 +76,19 @@ public class HwOauth2Application extends ApplicationBase {
             registry.addViewController(Urls.LOGIN).setViewName("login");
             registry.addViewController(Urls.OAUTH_CONFIRM_ACCESS).setViewName("oauth-confirm-access");
             registry.addViewController(Urls.OAUTH_ERROR).setViewName("oauth-error");
+        }
+    }
+
+    @Configuration
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public static class ErrorPagesCustomizer implements EmbeddedServletContainerCustomizer {
+
+        @Override
+        public void customize(ConfigurableEmbeddedServletContainer container) {
+            container.addErrorPages(new ErrorPage(HttpStatus.UNAUTHORIZED, "/error-pages/401.html"));
+            container.addErrorPages(new ErrorPage(HttpStatus.FORBIDDEN, "/error-pages/403.html"));
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/error-pages/404.html"));
+            container.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error-pages/500.html"));
         }
     }
 
