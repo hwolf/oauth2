@@ -46,7 +46,8 @@ public final class ApprovalPK implements Serializable {
             return false;
         }
         ApprovalPK other = (ApprovalPK) obj;
-        return Objects.equals(userId, other.userId) && Objects.equals(clientId, other.clientId)
+        return Objects.equals(userId, other.userId) //
+                && Objects.equals(clientId, other.clientId) //
                 && Objects.equals(scope, other.scope);
     }
 }
