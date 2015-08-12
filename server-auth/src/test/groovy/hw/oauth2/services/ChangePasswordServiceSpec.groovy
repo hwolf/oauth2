@@ -14,7 +14,6 @@ import hw.oauth2.authentication.UserAuthenticationStrategy
 import hw.oauth2.entities.User
 import hw.oauth2.entities.UserRepository
 
-
 class ChangePasswordServiceSpec extends Specification {
 
     static final USER_ID = "a user id"

@@ -10,9 +10,6 @@ spring:
     show-sql: false
     hibernate:
        ddl-auto: none
-#  data:
-#    rest:
-#      base-uri: /api
 
 server:
   port: 9999
@@ -46,16 +43,6 @@ spring:
     cache: false
   jpa:
     show-sql: true
-#    hibernate:
-#       ddl-auto: create-drop
-#flyway:
-#  enabled: false
-
-#  datasource:
-#    driverClassName: org.mariadb.jdbc.Driver
-#    url: jdbc:mysql://localhost/dev1_hwoauth2
-#    username: dev1
-#    password: dev1
 
 ---
 
@@ -74,3 +61,15 @@ spring:
     password: test1
 
 ---
+
+#
+# Settings for acceptance tests
+#
+
+spring:
+  profiles: acceptance-tests
+  main:
+    show-banner: false
+  jackson:
+    serialization:
+      indent-output: true

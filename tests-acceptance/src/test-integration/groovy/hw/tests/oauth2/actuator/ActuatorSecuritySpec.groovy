@@ -1,10 +1,13 @@
 package hw.tests.oauth2.actuator
 
-import hw.oauth2.entities.UserRepository
-import hw.tests.oauth2.HwOauth2Spec;
+import spock.lang.Unroll
+
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+
+import hw.tests.oauth2.HwOauth2Spec
 import hw.tests.oauth2.pages.LoginPage
 import hw.tests.oauth2.utils.UserHelper
-import spock.lang.Unroll
 
 class ActuatorSecuritySpec extends HwOauth2Spec {
 
@@ -41,7 +44,7 @@ class ActuatorSecuritySpec extends HwOauth2Spec {
 
         then:
         currentUrl.endsWith endpoint
-        !$('h1')
+        validateJson($('body').text())
 
         where:
         endpoint << ENDPOINTS
@@ -70,5 +73,11 @@ class ActuatorSecuritySpec extends HwOauth2Spec {
 
         where:
         endpoint << ENDPOINTS
+    }
+
+    private void validateJson(String json) {
+        ObjectMapper objectMapper = new ObjectMapper()
+        objectMapper.enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
+        objectMapper.readTree(json)
     }
 }
