@@ -19,7 +19,7 @@ public class ChangePasswordPage extends Page {
         fieldUserId { $("form #userid").text() }
 
         errorMessage { $("form .alert").text() }
-        noErrorMessage { $("form .alert").isEmpty() }
+        noErrorMessage { $("form .alert").empty }
     }
 
     def changePassword(oldPassword, newPassword, newPasswordConfirm) {

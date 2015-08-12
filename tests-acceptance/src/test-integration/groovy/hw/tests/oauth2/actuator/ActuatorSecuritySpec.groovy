@@ -75,6 +75,11 @@ class ActuatorSecuritySpec extends HwOauth2Spec {
         endpoint << ENDPOINTS
     }
 
+    /**
+     * Validate if {@code json} is valid JSON.
+     *
+     * Throws an exception if {@code json} does not contain a valid JSON string.
+     */
     private void validateJson(String json) {
         ObjectMapper objectMapper = new ObjectMapper()
         objectMapper.enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)

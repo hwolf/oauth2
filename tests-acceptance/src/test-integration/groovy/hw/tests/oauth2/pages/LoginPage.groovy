@@ -16,7 +16,7 @@ public class LoginPage extends Page {
         loginButton { $("button[name='login']") }
 
         errorMessage { $("form .alert").text() }
-        noErrorMessage { $("form .alert").isEmpty() }
+        noErrorMessage { $("form .alert").empty }
     }
 
     def login(user, password) {

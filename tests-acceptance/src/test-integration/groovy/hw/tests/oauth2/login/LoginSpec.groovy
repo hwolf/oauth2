@@ -1,12 +1,12 @@
 package hw.tests.oauth2.login
 
-import hw.tests.oauth2.HwOauth2Spec;
+import java.time.Instant
+
+import hw.tests.oauth2.HwOauth2Spec
 import hw.tests.oauth2.pages.ChangePasswordPage
 import hw.tests.oauth2.pages.LoginPage
 import hw.tests.oauth2.pages.TestPage
 import hw.tests.oauth2.utils.UserHelper
-
-import java.time.Instant
 
 class LoginSpec extends HwOauth2Spec {
 
@@ -24,25 +24,25 @@ class LoginSpec extends HwOauth2Spec {
         then:
         noErrorMessage
 
-        when:
-        login userId, password + "1"
+        when: "First try with wrong password"
+        login userId, "wrong password 1"
 
         then:
         errorMessage == 'Bad credentials'
 
-        when:
-        login userId, password + "2"
+        when: "Second try with wrong password"
+        login userId, "wrong password 2"
 
         then:
         errorMessage == 'Bad credentials'
 
-        when:
-        login userId, password + "3"
+        when: "Third try with wrong password"
+        login userId, "wrong password 3"
 
         then:
         errorMessage == 'Bad credentials'
 
-        when: // Even
+        when: "Try login with correct password"
         login userId, password
 
         then:
