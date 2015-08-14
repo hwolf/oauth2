@@ -1,5 +1,7 @@
 package hw.utils.tests.logging;
 
+import java.util.List;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -43,6 +45,10 @@ public class LogbackVerifier implements TestRule {
                 }
             }
         };
+    }
+
+    public List<ILoggingEvent> getEvents() {
+        return appender.list;
     }
 
     public ILoggingEvent extractNextLogEvent() {
