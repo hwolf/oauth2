@@ -21,7 +21,23 @@ class ExceptionLoggerAdviceSpec extends Specification {
     @Rule
     public final LogbackVerifier logVerifier = new LogbackVerifier(Level.ERROR, ExceptionLoggerAdvice.class.name)
 
-    def "an exception should be logged"() {
+    def "an exception should be logged with url in log message"() {
+
+        given:
+        def request = new MockHttpServletRequest(requestURI: "/my-path")
+        def response = new MockHttpServletResponse()
+
+        when:
+        new ExceptionLoggerAdvice().logException(request, response, new MyException())
+
+        then:
+        ILoggingEvent event = logVerifier.extractNextLogEvent()
+        event.level == Level.ERROR
+        event.throwableProxy.className == MyException.class.name
+        event.formattedMessage.contains("/my-path")
+    }
+
+    def "an exception should be logged with url and query string in log message"() {
 
         given:
         def request = new MockHttpServletRequest(requestURI: "/my-path", queryString: "x=x&a=b")
