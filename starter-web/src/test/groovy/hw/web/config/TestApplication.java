@@ -1,4 +1,4 @@
-package hw.web.config.testapp;
+package hw.web.config;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

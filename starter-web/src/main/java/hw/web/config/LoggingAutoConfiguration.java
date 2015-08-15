@@ -2,12 +2,10 @@ package hw.web.config;
 
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import hw.web.logging.ExceptionLoggerAdvice;
 import hw.web.logging.LoggingFilter;
 
-@Configuration
 public class LoggingAutoConfiguration {
 
     @Bean

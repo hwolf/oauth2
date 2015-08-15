@@ -10,6 +10,9 @@ spring:
     show-sql: false
     hibernate:
        ddl-auto: none
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
 
 server:
   port: 9999
@@ -21,6 +24,7 @@ flyway:
   table: t_schema_version
 
 management:
+  context-path: /manage
   security:
     enabled: true
     role: admin

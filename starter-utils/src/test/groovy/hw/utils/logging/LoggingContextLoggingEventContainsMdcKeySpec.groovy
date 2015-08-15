@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 
 import spock.lang.Specification
 import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.spi.ILoggingEvent
 
 import hw.utils.tests.logging.LogbackVerifier
 
@@ -25,7 +26,7 @@ class LoggingContextLoggingEventContainsMdcKeySpec extends Specification {
         LoggerFactory.getLogger(LOGGER_NAME).info(logMessage)
 
         then:
-        logVerifier.events.size == 1
-        logVerifier.events[0].getMDCPropertyMap()[LoggingContext.MDC_KEY]
+        ILoggingEvent event = logVerifier.extractNextLogEvent()
+        event.getMDCPropertyMap()[LoggingContext.MDC_KEY]
     }
 }
