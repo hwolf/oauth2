@@ -7,6 +7,7 @@ buildscript {
     }
     dependencies { 
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE" 
+        classpath "io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE"
     }
 }
 
@@ -19,6 +20,7 @@ def javaProjects = subprojects
 
 configure(allprojects) {
     apply plugin: 'jacoco'
+    apply plugin: 'io.spring.dependency-management'
     
     repositories {
         maven {  
@@ -37,7 +39,9 @@ configure(javaProjects) {
     apply plugin: 'spring-boot'
     apply plugin: 'org.unbroken-dome.test-sets'
 
-    springBoot { bootRepackage.enabled = false }
+    bootRepackage {
+        enabled = false 
+    }
 
     ext {
         V_GUAVA = '18.0'

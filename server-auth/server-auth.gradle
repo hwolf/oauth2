@@ -1,6 +1,7 @@
 
-springBoot { 
-    bootRepackage.enabled = true
+ 
+bootRepackage {
+    enabled = true
 }
 
 dependencies {
