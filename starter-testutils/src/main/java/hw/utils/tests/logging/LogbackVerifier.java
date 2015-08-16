@@ -1,8 +1,6 @@
 package hw.utils.tests.logging;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.rules.ExternalResource;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -13,7 +11,7 @@ import ch.qos.logback.core.read.ListAppender;
 /**
  * A JUnit rule which captures log events.
  */
-public class LogbackVerifier implements TestRule {
+public class LogbackVerifier extends ExternalResource {
 
     private final Level level;
     private final String loggerName;
@@ -29,27 +27,12 @@ public class LogbackVerifier implements TestRule {
         this.loggerName = loggerName;
     }
 
-    @Override
-    public Statement apply(Statement base, Description description) {
-        return new Statement() {
-
-            @Override
-            public void evaluate() throws Throwable {
-                before();
-                try {
-                    base.evaluate();
-                } finally {
-                    after();
-                }
-            }
-        };
-    }
-
     public ILoggingEvent extractNextLogEvent() {
         return appender.list.remove(0);
     }
 
-    private void before() {
+    @Override
+    protected void before() {
         appender = new ListAppender<>();
         addAppender();
         appender.start();
@@ -62,7 +45,8 @@ public class LogbackVerifier implements TestRule {
         logger.setAdditive(false);
     }
 
-    private void after() {
+    @Override
+    protected void after() {
         getLogger().detachAppender(appender);
     }
 
