@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 @Configuration
 class TestpageConfiguration extends WebMvcConfigurerAdapter {
 
