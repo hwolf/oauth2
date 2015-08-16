@@ -1,12 +1,15 @@
 package hw.tests.oauth2.utils
 
-import hw.oauth2.entities.User
-import hw.oauth2.entities.UserRepository
-
 import java.time.Instant
 
 import javax.transaction.Transactional
 
+import groovy.transform.CompileStatic
+
+import hw.oauth2.entities.User
+import hw.oauth2.entities.UserRepository
+
+@CompileStatic
 @Transactional
 class UserHelper {
 
