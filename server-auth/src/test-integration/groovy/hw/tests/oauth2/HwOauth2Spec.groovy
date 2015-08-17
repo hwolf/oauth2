@@ -15,7 +15,7 @@ import hw.tests.oauth2.utils.UserHelper
 
 @WebIntegrationTest(randomPort = true)
 @SpringApplicationConfiguration(classes = [HwOauth2Application, TestpageConfiguration])
-@ActiveProfiles([ "acceptance-tests" ])
+@ActiveProfiles([ "dev" ])
 abstract class HwOauth2Spec extends GebReportingSpec {
 
     @Value('${local.server.port}')

@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +29,7 @@ import hw.oauth2.entities.RefreshTokenRepository
 @RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(classes = TestConfiguration)
 @ActiveProfiles("dev")
+@TestPropertySource(properties = "logging.level.org=ERROR")
 class TokenStoreImplTest extends TokenStoreBaseTests {
 
     @EnableAutoConfiguration

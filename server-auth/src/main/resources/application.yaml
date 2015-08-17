@@ -63,17 +63,3 @@ spring:
     url: jdbc:mysql://localhost/test1_hwoauth2
     username: test1
     password: test1
-
----
-
-#
-# Settings for acceptance tests
-#
-
-spring:
-  profiles: acceptance-tests
-  main:
-    show-banner: false
-  jackson:
-    serialization:
-      indent-output: true
