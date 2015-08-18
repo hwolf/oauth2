@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-	hw.web.config.LoggingAutoConfiguration
+	web.config.LoggingAutoConfiguration

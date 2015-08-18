@@ -5,3 +5,9 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-support:2.47.1"
     testCompile "org.springframework.cloud:spring-cloud-starter-security:1.0.3.RELEASE"
 }
+
+testSets {
+    acceptanceTest {
+        dirName = 'test-acceptance'
+    }
+}

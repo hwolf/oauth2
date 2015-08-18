@@ -33,6 +33,6 @@ dependencies {
     testCompile "org.springframework.cloud:spring-cloud-starter-security:1.0.3.RELEASE"
 }
 
-group = 'hw'
+group = 'oauth2'
 version = "$version"
-mainClassName = 'hw.oauth2.HwOauth2Application'
+mainClassName = 'oauth2.OAuth2Application'

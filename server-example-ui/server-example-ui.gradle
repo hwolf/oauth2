@@ -16,6 +16,6 @@ dependencies {
     compile "org.webjars:bootstrap:3.3.5"
 }
 
-group = 'hw'
+group = 'oauth2'
 version = "$version"
 mainClassName = 'demo.UiApplication'
