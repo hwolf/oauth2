@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.provider.token.AuthenticationKeyGener
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import com.google.common.base.Objects;
+
 import oauth2.entities.AccessToken;
 import oauth2.entities.AccessTokenRepository;
 import oauth2.entities.RefreshToken;
@@ -42,7 +44,9 @@ public class TokenServiceImpl implements TokenStore {
         if (accessToken == null) {
             return null;
         }
-        if (!key.equals(authenticationKeyGenerator.extractKey(readAuthentication(accessToken.getValue())))) {
+        OAuth2Authentication authFromAccessToken = readAuthentication(accessToken.getValue());
+        if (authFromAccessToken == null
+                || !Objects.equal(key, authenticationKeyGenerator.extractKey(authFromAccessToken))) {
             accessTokenRepository.delete(entity);
             // Keep the store consistent (maybe the same user is represented by this
             // authentication but the details have changed)
