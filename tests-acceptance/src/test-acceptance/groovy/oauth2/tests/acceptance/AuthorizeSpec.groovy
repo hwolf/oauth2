@@ -19,7 +19,7 @@ class AuthorizeSpec extends GebReportingSpec {
         at LoginPage
 
         when:
-        login "user1", "user1"
+        login "testuser1", "testuser1"
 
         then:
         at AuthorizePage

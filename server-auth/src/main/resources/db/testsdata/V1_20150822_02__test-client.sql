@@ -1,6 +1,7 @@
 
-insert into t_users (user_id, password, password_expires_at)
-	values ('user1', 'user1', DATE_ADD(now(), interval 1 day));	
-insert into t_user_entries (user_id, name, data) values ('user1', 'AUTHORITY', 'ROLE_authenticated');
-
-insert into t_login_status (user_id, failed_login_attempts) values ('user1', 0);
+insert into t_clients (client_id, client_secret) values ('acme', 'acmesecret');	
+insert into t_client_entries (client_id, name, data) values ('acme', 'GRANT_TYPE', 'authorization_code');
+insert into t_client_entries (client_id, name, data) values ('acme', 'GRANT_TYPE', 'refresh_token');
+insert into t_client_entries (client_id, name, data) values ('acme', 'SCOPE', 'scope1');
+insert into t_client_entries (client_id, name, data) values ('acme', 'SCOPE', 'scope2');
+insert into t_client_entries (client_id, name, data) values ('acme', 'SCOPE', 'scope3');
