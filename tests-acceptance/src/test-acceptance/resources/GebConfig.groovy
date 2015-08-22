@@ -3,7 +3,7 @@ driver = "firefox"
 
 reportsDir = "build/geb-reports"
 
-waiting { timeout = 2 }
+waiting { timeout = 5 }
 
 environments {
     phantomjs { driver = "org.openqa.selenium.phantomjs.PhantomJSDriver" }

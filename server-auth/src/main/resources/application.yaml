@@ -50,6 +50,15 @@ spring:
 
 ---
 
+
+spring:
+  profiles: testdata
+
+flyway:
+  locations: classpath:db
+
+---
+
 #
 # Settings for test
 #

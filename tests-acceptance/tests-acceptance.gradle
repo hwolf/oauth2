@@ -1,13 +1,64 @@
 
+import com.wiredforcode.gradle.spawn.*
+
+plugins {
+    id "com.wiredforcode.spawn" version "0.6.0"
+}
+
 dependencies {
     testCompile "org.gebish:geb-spock:0.12.1"
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.47.1" 
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.47.1"
     testCompile "org.seleniumhq.selenium:selenium-support:2.47.1"
     testCompile "org.springframework.cloud:spring-cloud-starter-security:1.0.3.RELEASE"
+    integrationTestCompile project(':server-auth')
 }
 
 testSets {
     acceptanceTest {
         dirName = 'test-acceptance'
     }
+}
+
+acceptanceTest.dependsOn "startServerUi"
+acceptanceTest.dependsOn "startServerAuth"
+acceptanceTest.dependsOn "startServerResource"
+
+acceptanceTest.finalizedBy "stopServerResource"
+acceptanceTest.finalizedBy "stopServerAuth"
+acceptanceTest.finalizedBy "stopServerUi"
+
+task startServerAuth(type: SpawnProcessTask, dependsOn: ":server-auth:assemble") {
+    command "java -jar -Dspring.profiles.active=dev,testdata ${rootDir}/server-auth/build/libs/server-auth.jar"
+    ready 'Undertow started on port'
+    directory "$buildDir/pids/server-auth"
+}
+
+startServerAuth.doFirst { mkdir "$buildDir/pids/server-auth" }
+
+task stopServerAuth(type: KillProcessTask) {
+    directory "$buildDir/pids/server-auth"
+}
+
+task startServerResource(type: SpawnProcessTask, dependsOn: ":server-example-resource:assemble") {
+    command "java -jar ${rootDir}/server-example-resource/build/libs/server-example-resource.jar"
+    ready 'Undertow started on port'
+    directory "$buildDir/pids/server-example-resource"
+}
+
+startServerResource.doFirst { mkdir "$buildDir/pids/server-example-resource" }
+
+task stopServerResource(type: KillProcessTask) {
+    directory "$buildDir/pids/server-example-resource"
+}
+
+task startServerUi(type: SpawnProcessTask, dependsOn: ":server-example-ui:assemble") {
+    command "java -jar ${rootDir}/server-example-ui/build/libs/server-example-ui.jar"
+    ready 'Undertow started on port'
+    directory "$buildDir/pids/server-example-ui"
+}
+
+startServerUi.doFirst { mkdir "$buildDir/pids/server-example-ui" }
+
+task stopServerUi(type: KillProcessTask) {
+    directory "$buildDir/pids/server-example-ui"
 }
