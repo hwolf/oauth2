@@ -169,6 +169,5 @@ task ciBuild {
 
 coverityCheck.dependsOn subprojects*.integrationTest
 coverityCheck.onlyIf { 
-    println project.properties
     project.hasProperty('runCoverity') && project.getProperty('runCoverity')
 }
