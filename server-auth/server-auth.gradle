@@ -15,6 +15,7 @@
  */
  
 apply plugin: 'spring-boot'
+apply plugin: 'info.solidsoft.pitest'
 
 dependencies {
     compile project(":starter-web")
@@ -43,6 +44,10 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver" 
     testCompile "org.seleniumhq.selenium:selenium-support"
     testCompile "org.springframework.cloud:spring-cloud-starter-security"
+}
+
+pitest {
+    pitestVersion = '1.1.4'
 }
 
 group = 'oauth2'
