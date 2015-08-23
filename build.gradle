@@ -143,11 +143,6 @@ configure(javaProjects) {
             csv.enabled = false
         }
     }
-
-    //coverityCheck.dependsOn subprojects*.integrationTest
-    coverityCheck.onlyIf { 
-        project.hasProperty('runCoverity') && project.getProperty('runCoverity')
-    }
 }
 
 task testRootReport(type: TestReport) {
@@ -173,6 +168,6 @@ task ciBuild {
         integrationTestRootReport
 }
 
-coverityCheck.onlyIf {
-    false
+coverityCheck.onlyIf { 
+    project.hasProperty('runCoverity') && project.getProperty('runCoverity')
 }
