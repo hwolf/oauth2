@@ -7,28 +7,30 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<section class="col-md-8">
-			<h2>Please Login</h2>
-			<form role="form" th:action="@{login}" method="post">
-				<div class="form-group has-error" th:if="${session.SPRING_SECURITY_LAST_EXCEPTION != null}">
-					<div th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}" class="alert alert-danger" role="alert">
+		<div class="row">
+			<section class="col-md-8">
+				<h2>Please Login</h2>
+				<form role="form" th:action="@{login}" method="post">
+					<div class="form-group has-error" th:if="${session.SPRING_SECURITY_LAST_EXCEPTION != null}">
+						<div th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}" class="alert alert-danger" role="alert">
+						</div>
 					</div>
-				</div>
-				<div class="form-group">
-					<label for="username">User Id</label> 
-					<input type="text"
-							class="form-control" id="username" placeholder="Your user id"
-							name="username" autofocus="autofocus" />
-				</div>
-				<div class="form-group">
-					<label for="password">Password</label> 
-					<input type="password"
-							class="form-control" id="password" placeholder="Your password"
-							name="password" />
-				</div>
-				<button name="login" type="submit" class="btn btn-primary">Login</button>
-			</form>
-		</section>
+					<div class="form-group">
+						<label for="username">User Id</label> 
+						<input type="text"
+								class="form-control" id="username" placeholder="Your user id"
+								name="username" autofocus="autofocus" />
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label> 
+						<input type="password"
+								class="form-control" id="password" placeholder="Your password"
+								name="password" />
+					</div>
+					<button name="login" type="submit" class="btn btn-primary">Login</button>
+				</form>
+			</section>
+		</div>
 	</div>
 </body>
 </html>

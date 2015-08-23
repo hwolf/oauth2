@@ -36,7 +36,7 @@ def javaProjects = subprojects
 configure(allprojects) {
     apply plugin: 'jacoco'
     apply plugin: 'io.spring.dependency-management'
-    
+
     repositories {
         maven {  
             url "http://jcenter.bintray.com/"
@@ -53,7 +53,7 @@ configure(javaProjects) {
     apply plugin: 'groovy'
     apply plugin: 'spring-boot'
     apply plugin: 'org.unbroken-dome.test-sets'
-
+    
     bootRepackage {
         enabled = false 
     }
