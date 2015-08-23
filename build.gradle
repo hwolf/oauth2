@@ -24,7 +24,7 @@ buildscript {
     }
 }
 
-plugins { 
+plugins {
     id 'com.coverity.ondemand' version '1.3.632'
     id 'org.unbroken-dome.test-sets' version '1.1.0'
     id 'info.solidsoft.pitest' version '1.1.4'
@@ -143,6 +143,11 @@ configure(javaProjects) {
             csv.enabled = false
         }
     }
+
+    //coverityCheck.dependsOn subprojects*.integrationTest
+    coverityCheck.onlyIf { 
+        project.hasProperty('runCoverity') && project.getProperty('runCoverity')
+    }
 }
 
 task testRootReport(type: TestReport) {
@@ -166,9 +171,4 @@ task ciBuild {
         subprojects*.jacocoTestReport, 
         testRootReport, 
         integrationTestRootReport
-}
-
-coverityCheck.dependsOn subprojects*.integrationTest
-coverityCheck.onlyIf { 
-    project.hasProperty('runCoverity') && project.getProperty('runCoverity')
 }
