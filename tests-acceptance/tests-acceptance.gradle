@@ -41,37 +41,37 @@ acceptanceTest.finalizedBy "stopServerAuth"
 acceptanceTest.finalizedBy "stopServerUi"
 
 task startServerAuth(type: SpawnProcessTask, dependsOn: ":server-auth:assemble") {
-    command "java -jar -Dspring.profiles.active=dev,testdata ${rootDir}/server-auth/build/libs/server-auth.jar"
+    command "java -jar -Dspring.profiles.active=dev,testdata -Dlogging.path=$buildDir/server-auth ${rootDir}/server-auth/build/libs/server-auth.jar"
     ready 'Undertow started on port'
-    directory "$buildDir/pids/server-auth"
+    directory "$buildDir/server-auth"
 }
 
-startServerAuth.doFirst { mkdir "$buildDir/pids/server-auth" }
+startServerAuth.doFirst { mkdir "$buildDir/server-auth" }
 
 task stopServerAuth(type: KillProcessTask) {
-    directory "$buildDir/pids/server-auth"
+    directory "$buildDir/server-auth"
 }
 
 task startServerResource(type: SpawnProcessTask, dependsOn: ":server-example-resource:assemble") {
-    command "java -jar ${rootDir}/server-example-resource/build/libs/server-example-resource.jar"
+    command "java -jar -Dlogging.path=$buildDir/server-example-resource ${rootDir}/server-example-resource/build/libs/server-example-resource.jar"
     ready 'Undertow started on port'
-    directory "$buildDir/pids/server-example-resource"
+    directory "$buildDir/server-example-resource"
 }
 
-startServerResource.doFirst { mkdir "$buildDir/pids/server-example-resource" }
+startServerResource.doFirst { mkdir "$buildDir/server-example-resource" }
 
 task stopServerResource(type: KillProcessTask) {
-    directory "$buildDir/pids/server-example-resource"
+    directory "$buildDir/server-example-resource"
 }
 
 task startServerUi(type: SpawnProcessTask, dependsOn: ":server-example-ui:assemble") {
-    command "java -jar ${rootDir}/server-example-ui/build/libs/server-example-ui.jar"
+    command "java -jar -Dlogging.path=$buildDir/server-example-ui ${rootDir}/server-example-ui/build/libs/server-example-ui.jar"
     ready 'Undertow started on port'
-    directory "$buildDir/pids/server-example-ui"
+    directory "$buildDir/server-example-ui"
 }
 
-startServerUi.doFirst { mkdir "$buildDir/pids/server-example-ui" }
+startServerUi.doFirst { mkdir "$buildDir/server-example-ui" }
 
 task stopServerUi(type: KillProcessTask) {
-    directory "$buildDir/pids/server-example-ui"
+    directory "$buildDir/server-example-ui"
 }
