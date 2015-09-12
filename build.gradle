@@ -25,12 +25,12 @@ buildscript {
 }
 
 plugins {
-    id 'com.coverity.ondemand' version '1.3.632'
+    id 'com.coverity.ondemand' version '1.3.670'
     id 'org.unbroken-dome.test-sets' version '1.1.0'
     id 'info.solidsoft.pitest' version '1.1.4'
 }
 
-def javaProjects = subprojects
+def javaProjects = subprojects.findAll { it.name != 'client-ui' }
 
 configure(javaProjects) {
     apply plugin: 'java'
@@ -146,7 +146,7 @@ configure(javaProjects) {
 }
 
 task testRootReport(type: TestReport) {
-    reportOn subprojects*.test
+    reportOn javaProjects*.test
     destinationDir = file("${reporting.baseDir}/test")
     test.testLogging { 
         exceptionFormat "full" 
@@ -154,7 +154,7 @@ task testRootReport(type: TestReport) {
 }
 
 task integrationTestRootReport(type: TestReport) {
-    reportOn subprojects*.integrationTest
+    reportOn javaProjects*.integrationTest
     destinationDir = file("${reporting.baseDir}/integrationTest")
     test.testLogging { 
         exceptionFormat "full" 
@@ -162,8 +162,8 @@ task integrationTestRootReport(type: TestReport) {
 }
 
 task ciBuild {
-    dependsOn allprojects*.build, 
-        subprojects*.jacocoTestReport, 
+    dependsOn javaProjects*.build, 
+        javaProjects*.jacocoTestReport, 
         testRootReport, 
         integrationTestRootReport
 }
