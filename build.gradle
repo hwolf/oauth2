@@ -32,6 +32,8 @@ plugins {
 
 def javaProjects = subprojects.findAll { it.name != 'client-ui' }
 
+ext['spring.version'] = '4.2.1.RELEASE'
+
 configure(javaProjects) {
     apply plugin: 'java'
     apply plugin: 'groovy'
