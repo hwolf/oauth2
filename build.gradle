@@ -59,8 +59,8 @@ configure(javaProjects) {
                 entry 'spring-cloud-starter-security'
                 entry 'spring-cloud-starter-zuul'
             }
-            dependency "org.codehaus.groovy:groovy-all:2.3.11"
-            dependencySet(group: 'org.spockframework', version: '1.0-groovy-2.3') {
+            dependency "org.codehaus.groovy:groovy-all:2.4.4"
+            dependencySet(group: 'org.spockframework', version: '1.0-groovy-2.4') {
                 entry 'spock-core'
                 entry 'spock-spring'
             }
