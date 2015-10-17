@@ -46,7 +46,7 @@ configure(javaProjects) {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.springframework.boot:spring-boot-starter-parent:1.2.7.RELEASE'
+            mavenBom 'org.springframework.boot:spring-boot-starter-parent:1.2.6.RELEASE'
         }
         dependencies {
             dependencySet(group: 'org.springframework.security.oauth', version: '2.0.7.RELEASE') {
@@ -60,7 +60,7 @@ configure(javaProjects) {
                 entry 'guava'
                 entry 'guava-testlib'
             }
-            dependency "org.codehaus.groovy:groovy-all:2.4.4"
+            dependency "org.codehaus.groovy:groovy-all:2.4.5"
             dependencySet(group: 'org.spockframework', version: '1.0-groovy-2.4') {
                 entry 'spock-core'
                 entry 'spock-spring'
