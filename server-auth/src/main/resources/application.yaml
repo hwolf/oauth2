@@ -50,7 +50,6 @@ spring:
 
 ---
 
-
 spring:
   profiles: testdata
 
