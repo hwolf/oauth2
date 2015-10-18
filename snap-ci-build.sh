@@ -8,5 +8,5 @@ export SPRING_DATASOURCE_DRIVERCLASSNAME=org.mariadb.jdbc.Driver
 export CODECOV_TOKEN
 
 ./gradlew --version
-./gradlew --stacktrace clean ciBuild
+./gradlew --stacktrace clean ciBuild -x coverityCheck
 bash <(curl -s https://codecov.io/bash)
