@@ -6,4 +6,4 @@ export SPRING_DATASOURCE_URL=$SNAP_DB_MYSQL_JDBC_URL
 export SPRING_DATASOURCE_DRIVERCLASSNAME=org.mariadb.jdbc.Driver
 
 ./gradlew --version
-./gradlew --stacktrace clean build test coverityCheck -x integrationTest -PrunCoverity=1
+./gradlew --stacktrace clean build test coverityCheck
