@@ -11,6 +11,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="server-auth"/>
 <booleanAttribute key="spring.boot.debug.enable" value="false"/>
 <booleanAttribute key="spring.boot.lifecycle.enable" value="true"/>
+<stringAttribute key="spring.boot.lifecycle.termination.timeout" value="15000"/>
 <booleanAttribute key="spring.boot.livebean.enable" value="true"/>
 <stringAttribute key="spring.boot.livebean.port" value="54401"/>
 <stringAttribute key="spring.boot.profile" value="dev"/>

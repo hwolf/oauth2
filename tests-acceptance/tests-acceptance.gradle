@@ -41,7 +41,7 @@ acceptanceTest.finalizedBy "stopServerAuth"
 acceptanceTest.finalizedBy "stopServerUi"
 
 task startServerAuth(type: SpawnProcessTask, dependsOn: ":server-auth:assemble") {
-    command "java -jar -Dspring.profiles.active=dev,testdata -Dlogging.path=$buildDir/server-auth ${rootDir}/server-auth/build/libs/server-auth.jar"
+    command "java -jar -Dspring.profiles.active=acceptance-tests -Dlogging.path=$buildDir/server-auth ${rootDir}/server-auth/build/libs/server-auth.jar"
     ready 'Undertow started on port'
     directory "$buildDir/server-auth"
 }

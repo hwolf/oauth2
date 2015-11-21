@@ -19,28 +19,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import oauth2.Urls;
 
 @RestController
 public class UserDetailsEndpoint {
 
+    @Getter
+    @RequiredArgsConstructor
     static final class User {
 
         private final String id;
         private final String name;
-
-        public User(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 
     @RequestMapping(Urls.USER)

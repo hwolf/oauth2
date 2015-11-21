@@ -17,9 +17,11 @@ package oauth2.entities;
 
 import java.io.Serializable;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @Value
+@RequiredArgsConstructor
 public final class ApprovalPK implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,4 +29,8 @@ public final class ApprovalPK implements Serializable {
     private String userId;
     private String clientId;
     private String scope;
+
+    ApprovalPK() {
+        this(null, null, null);
+    }
 }

@@ -50,8 +50,12 @@ spring:
 
 ---
 
+#
+# Settings for acceptance tests
+#
+
 spring:
-  profiles: testdata
+  profiles: acceptance-tests
 
 flyway:
   locations: classpath:db
