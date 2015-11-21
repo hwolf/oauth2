@@ -26,9 +26,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "t_clients")
+@Getter
+@Setter
 public class Client {
 
     @Id
@@ -39,26 +46,11 @@ public class Client {
 
     @ElementCollection
     @CollectionTable(name = "t_client_entries", joinColumns = @JoinColumn(name = "client_id") )
+    @Setter(AccessLevel.NONE)
     private Collection<Entry> entries;
 
     private Integer accessTokenValidity;
     private Integer refreshTokenValidity;
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String userId) {
-        clientId = userId;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String password) {
-        clientSecret = password;
-    }
 
     public Collection<Entry> getEntries() {
         if (entries == null) {
@@ -67,19 +59,17 @@ public class Client {
         return ImmutableSet.copyOf(entries);
     }
 
-    public Integer getAccessTokenValidity() {
-        return accessTokenValidity;
+    public void addEntry(String name, String value) {
+        if (entries == null) {
+            entries = Sets.newHashSet();
+        }
+        entries.add(Entry.create(name, value));
     }
 
-    public void setAccessTokenValidity(Integer accessTokenValidity) {
-        this.accessTokenValidity = accessTokenValidity;
-    }
-
-    public Integer getRefreshTokenValidity() {
-        return refreshTokenValidity;
-    }
-
-    public void setRefreshTokenValidity(Integer refreshTokenValidity) {
-        this.refreshTokenValidity = refreshTokenValidity;
+    public void removeEntry(String name, String value) {
+        if (entries == null) {
+            return;
+        }
+        entries.remove(Entry.create(name, value));
     }
 }

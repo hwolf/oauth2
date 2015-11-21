@@ -90,10 +90,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider, Messa
     }
 
     protected Set<GrantedAuthority> mapAuthorities(User user) {
-        Set<GrantedAuthority> authorities = user.getAuthorities();
+        Set<GrantedAuthority> authorities;
         if (user.isPasswordExpired()) {
             LOGGER.debug("User {}: Credentials have expired", user.getUserId());
             authorities = ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
+        } else {
+            authorities = user.getAuthorities();
         }
         return authorities;
     }

@@ -25,7 +25,12 @@ import javax.persistence.Embeddable;
 
 import com.google.common.collect.ImmutableSet;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Embeddable
+@Getter
+@Setter
 public class Entry {
 
     @Column(nullable = false)
@@ -49,38 +54,5 @@ public class Entry {
                 .filter(entry -> Objects.equals(name, entry.getName())) //
                 .map(entry -> entry.getData()) //
                 .collect(Collectors.toSet());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, data);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Entry other = (Entry) obj;
-        return Objects.equals(name, other.name) && Objects.equals(data, other.data);
     }
 }

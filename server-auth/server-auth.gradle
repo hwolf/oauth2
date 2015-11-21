@@ -31,6 +31,7 @@ dependencies {
     compile "org.webjars:bootstrap:3.3.5"
     compile "org.webjars:font-awesome:4.3.0-2"
     compile "org.webjars:jquery:2.1.4"
+    compile "org.projectlombok:lombok:1.16.6"
     
     runtime "org.jolokia:jolokia-core"
     runtime "org.flywaydb:flyway-core"

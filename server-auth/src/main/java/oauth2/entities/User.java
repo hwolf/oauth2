@@ -38,10 +38,15 @@ import org.springframework.util.StringUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import oauth2.jpa.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_users")
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -54,35 +59,13 @@ public class User {
 
     @ElementCollection
     @CollectionTable(name = "t_user_entries", joinColumns = @JoinColumn(name = "user_id") )
+    @Setter(AccessLevel.NONE)
     private Collection<Entry> entries;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @Setter(AccessLevel.NONE)
     private LoginStatus loginStatus;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Instant getPasswordExpiresAt() {
-        return passwordExpiresAt;
-    }
-
-    public void setPasswordExpiresAt(Instant passwordExpiredAt) {
-        passwordExpiresAt = passwordExpiredAt;
-    }
 
     public Set<GrantedAuthority> getAuthorities() {
         return Entry.filterEntriesByName("AUTHORITY", entries).stream()
@@ -128,5 +111,4 @@ public class User {
     public boolean isAccountLocked() {
         return getLoginStatus().getFailedLoginAttempts() >= 3;
     }
-
 }

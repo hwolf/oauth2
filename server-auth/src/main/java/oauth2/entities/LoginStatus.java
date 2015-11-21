@@ -22,10 +22,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Getter;
 import oauth2.jpa.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_login_status")
+@Getter
 public class LoginStatus {
 
     @Id
@@ -44,26 +46,6 @@ public class LoginStatus {
 
     public LoginStatus(String userId) {
         this.userId = userId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public int getFailedLoginAttempts() {
-        return failedLoginAttempts;
-    }
-
-    public Instant getLastSuccessfulLogin() {
-        return lastSuccessfulLogin;
-    }
-
-    public Instant getLastFailedLogin() {
-        return lastFailedLogin;
     }
 
     public void loginSuccessful(Instant when) {

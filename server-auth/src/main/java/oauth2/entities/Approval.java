@@ -28,11 +28,15 @@ import javax.persistence.Table;
 
 import org.springframework.security.oauth2.provider.approval.Approval.ApprovalStatus;
 
+import lombok.Getter;
+import lombok.Setter;
 import oauth2.jpa.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_approvals")
 @IdClass(ApprovalPK.class)
+@Getter
+@Setter
 public class Approval {
 
     @Id
@@ -55,52 +59,4 @@ public class Approval {
     @Column(nullable = false)
     @Convert(converter = InstantConverter.class)
     private Instant expiresAt;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    public Instant getLastUpdateAt() {
-        return lastUpdateAt;
-    }
-
-    public void setLastUpdateAt(Instant lastUpdateAt) {
-        this.lastUpdateAt = lastUpdateAt;
-    }
-
-    public ApprovalStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ApprovalStatus status) {
-        this.status = status;
-    }
-
-    public Instant getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(Instant expiresAt) {
-        this.expiresAt = expiresAt;
-    }
 }

@@ -24,8 +24,13 @@ import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "t_refresh_tokens")
+@Getter
+@Setter
 public class RefreshToken {
 
     @Id
@@ -37,20 +42,12 @@ public class RefreshToken {
     @Lob
     private byte[] authentication;
 
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
-
     public OAuth2RefreshToken getToken() {
         return SerializationUtils.deserialize(token);
     }
 
-    public void setToken(OAuth2RefreshToken refreshToken) {
-        token = SerializationUtils.serialize(refreshToken);
+    public void setToken(OAuth2RefreshToken token) {
+        this.token = SerializationUtils.serialize(token);
     }
 
     public OAuth2Authentication getAuthentication() {
