@@ -37,8 +37,4 @@ public class LoggingContext {
     public static String getContextId() {
         return MDC.get(MDC_KEY);
     }
-
-    private LoggingContext() {
-        // Avoid instantiation
-    }
 }

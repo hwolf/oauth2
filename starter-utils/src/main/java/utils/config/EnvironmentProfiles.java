@@ -24,8 +24,4 @@ public class EnvironmentProfiles {
     public static final String QA = "qa";
 
     public static final String PROD = "prod";
-
-    private EnvironmentProfiles() {
-        // Avoid instantiation
-    }
 }

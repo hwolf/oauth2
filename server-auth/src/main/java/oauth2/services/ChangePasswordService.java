@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +45,7 @@ public class ChangePasswordService {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_AUTHENTICATED', 'ROLE_MUST_CHANGE_PASSWORD')")
-    public void changePassword(String userId, String oldPassword, String newPassword)
-            throws ChangePasswordException, AuthenticationException {
+    public void changePassword(String userId, String oldPassword, String newPassword) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

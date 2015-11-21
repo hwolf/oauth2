@@ -40,13 +40,13 @@ public final class MyPasswordEncoder implements PasswordEncoder {
     private final String nameOfDefaultEncoder;
     private final Map<String, PasswordEncoder> encoders;
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     private MyPasswordEncoder(String nameOfDefaultEncoder, Map<String, PasswordEncoder> encoders) {
         this.nameOfDefaultEncoder = nameOfDefaultEncoder;
         this.encoders = ImmutableMap.copyOf(encoders);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override

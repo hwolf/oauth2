@@ -54,7 +54,7 @@ public class LogbackVerifier extends ExternalResource {
     }
 
     private void addAppender() {
-        Logger logger = getLogger();
+        Logger logger = getLogger(); // NOSONAR
         logger.addAppender(appender);
         logger.setLevel(level);
         logger.setAdditive(false);

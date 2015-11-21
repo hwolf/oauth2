@@ -69,7 +69,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider, Messa
 
     @Override
     @Transactional(noRollbackFor = AuthenticationException.class)
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) {
         checkNotNull(authentication);
         String userId = authentication.getName();
         User user = userRepository.findByUserId(userId);

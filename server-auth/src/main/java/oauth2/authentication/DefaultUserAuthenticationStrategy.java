@@ -23,7 +23,6 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -49,7 +48,7 @@ public class DefaultUserAuthenticationStrategy implements UserAuthenticationStra
     }
 
     @Override
-    public void authenticate(User user, Object credentials) throws AuthenticationException {
+    public void authenticate(User user, Object credentials) {
         checkNotNull(user);
 
         String userId = user.getUserId();

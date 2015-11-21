@@ -19,11 +19,11 @@ import java.util.function.Consumer;
 
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
 
 import oauth2.entities.Client;
 import oauth2.entities.ClientRepository;
@@ -107,7 +107,7 @@ public class ClientServiceImpl implements ClientDetailsService {
     }
 
     @Override
-    public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
+    public ClientDetails loadClientByClientId(String clientId) {
         Client client = clientRepository.findByClientId(clientId);
         if (client == null) {
             throw new NoSuchClientException("No client with requested id: " + clientId);
@@ -122,15 +122,16 @@ public class ClientServiceImpl implements ClientDetailsService {
     }
 
     @VisibleForTesting
-    Consumer<? super Entry> mapEntry(ClientDetailsBuilder builder) {
+    Consumer<Entry> mapEntry(ClientDetailsBuilder builder) {
         return entry -> findMapper(entry.getName()).setValue(entry.getData(), builder);
     }
 
     private EntryMapper findMapper(String name) {
-        try {
-            return EntryMapper.valueOf(name);
-        } catch (IllegalArgumentException ex) {
-            return EntryMapper.IGNORE;
+        for (EntryMapper mapper : EntryMapper.values()) {
+            if (Objects.equal(name, mapper.name())) {
+                return mapper;
+            }
         }
+        return EntryMapper.valueOf(name);
     }
 }

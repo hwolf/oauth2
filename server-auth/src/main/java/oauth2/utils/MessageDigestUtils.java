@@ -32,7 +32,7 @@ public class MessageDigestUtils {
     public static MessageDigest getMd5MessageDigest() {
         try {
             return MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) { // NOSONAR
             throw new IllegalStateException("MD5 algorithm not available. Fatal (should be in the JDK).");
         }
     }

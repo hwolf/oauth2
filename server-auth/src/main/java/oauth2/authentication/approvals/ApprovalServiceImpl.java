@@ -15,6 +15,7 @@
  */
 package oauth2.authentication.approvals;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -38,43 +39,57 @@ public class ApprovalServiceImpl implements ApprovalStore {
     public List<Approval> getApprovals(String userId, String clientId) {
         return approvalRepository.findByUserIdAndClientId(userId, clientId) //
                 .stream() //
-                .map(this::mapApproval) //
+                .map(ApprovalServiceImpl::fromEntity) //
                 .collect(Collectors.toList());
     }
 
-    private Approval mapApproval(oauth2.entities.Approval entity) {
-        return new Approval(entity.getUserId(), entity.getClientId(), entity.getScope(),
-                Date.from(entity.getExpiresAt()), entity.getStatus(), Date.from(entity.getLastUpdateAt()));
+    static Approval fromEntity(oauth2.entities.Approval entity) {
+        return new Approval(entity.getUserId(), entity.getClientId(), entity.getScope(), toDate(entity.getExpiresAt()),
+                entity.getStatus(), toDate(entity.getLastUpdateAt()));
     }
 
     @Override
     public boolean addApprovals(Collection<Approval> approvals) {
-        approvals.stream().forEach(this::addApproval);
+        approvals.stream() //
+                .map(ApprovalServiceImpl::toEntity) //
+                .forEach(entity -> approvalRepository.save(entity));
         return true;
     }
 
-    private void addApproval(Approval approval) {
-        oauth2.entities.Approval entity = approvalRepository
-                .findOne(new ApprovalPK(approval.getUserId(), approval.getClientId(), approval.getScope()));
-        if (entity == null) {
-            entity = new oauth2.entities.Approval();
-            entity.setUserId(approval.getUserId());
-            entity.setClientId(approval.getClientId());
-            entity.setScope(approval.getScope());
-        }
+    static oauth2.entities.Approval toEntity(Approval approval) {
+        oauth2.entities.Approval entity = new oauth2.entities.Approval();
+        entity.setUserId(approval.getUserId());
+        entity.setClientId(approval.getClientId());
+        entity.setScope(approval.getScope());
         entity.setStatus(approval.getStatus());
-        entity.setExpiresAt(approval.getExpiresAt().toInstant());
-        entity.setLastUpdateAt(approval.getLastUpdatedAt().toInstant());
-        approvalRepository.save(entity);
+        entity.setExpiresAt(toInstant(approval.getExpiresAt()));
+        entity.setLastUpdateAt(toInstant(approval.getLastUpdatedAt()));
+        return entity;
     }
 
     @Override
     public boolean revokeApprovals(Collection<Approval> approvals) {
-        approvals.stream().forEach(this::revokeApproval);
+        approvals.stream() //
+                .map(ApprovalServiceImpl::toPrimaryKey) //
+                .forEach(pk -> approvalRepository.delete(pk));
         return true;
     }
 
-    private void revokeApproval(Approval approval) {
-        approvalRepository.delete(new ApprovalPK(approval.getUserId(), approval.getClientId(), approval.getScope()));
+    static ApprovalPK toPrimaryKey(Approval approval) {
+        return new ApprovalPK(approval.getUserId(), approval.getClientId(), approval.getScope());
+    }
+
+    private static Date toDate(Instant instant) {
+        if (instant == null) {
+            return null;
+        }
+        return Date.from(instant);
+    }
+
+    private static Instant toInstant(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return date.toInstant();
     }
 }
