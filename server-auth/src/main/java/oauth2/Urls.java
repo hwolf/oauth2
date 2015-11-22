@@ -19,7 +19,7 @@ public class Urls {
 
     public static final String HOME = "/";
     public static final String LOGIN = "/login";
-    public static final String CHANGE_PASSWORD = "/change-password"; // NOSONAR
+    public static final String CHANGE_PASSWORD = "/change-password";
     public static final String USER = "/user";
 
     public static final String OAUTH_AUTHORIZE = "/oauth/authorize";

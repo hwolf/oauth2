@@ -71,14 +71,14 @@ abstract class TokenStoreBaseTests {
 
     @Test
     void testRetrieveAccessToken() {
-        //Test approved request
+        //Sample1 approved request
         OAuth2Request storedOAuth2Request = RequestTokenFactory.createOAuth2Request("id", true)
         OAuth2Authentication authentication = new OAuth2Authentication(storedOAuth2Request, new TestAuthentication("test2", true))
         DefaultOAuth2AccessToken expectedOAuth2AccessToken = new DefaultOAuth2AccessToken("testToken")
         expectedOAuth2AccessToken.setExpiration(new Date(Long.MAX_VALUE-1))
         tokenStore.storeAccessToken(expectedOAuth2AccessToken, authentication)
 
-        //Test unapproved request
+        //Sample1 unapproved request
         storedOAuth2Request = RequestTokenFactory.createOAuth2Request("id", false)
         authentication = new OAuth2Authentication(storedOAuth2Request, new TestAuthentication("test2", true))
         OAuth2AccessToken actualOAuth2AccessToken = tokenStore.getAccessToken(authentication)
@@ -160,7 +160,7 @@ abstract class TokenStoreBaseTests {
 
     @Test
     void testGetAccessTokenForDeletedUser() throws Exception {
-        //Test approved request
+        //Sample1 approved request
         OAuth2Request storedOAuth2Request = RequestTokenFactory.createOAuth2Request("id", true)
         OAuth2Authentication expectedAuthentication = new OAuth2Authentication(storedOAuth2Request, new TestAuthentication("test", true))
         OAuth2AccessToken expectedOAuth2AccessToken = new DefaultOAuth2AccessToken("testToken")
@@ -168,7 +168,7 @@ abstract class TokenStoreBaseTests {
         assert expectedOAuth2AccessToken == tokenStore.getAccessToken(expectedAuthentication)
         assert expectedAuthentication == tokenStore.readAuthentication(expectedOAuth2AccessToken.value)
 
-        //Test unapproved request
+        //Sample1 unapproved request
         storedOAuth2Request = RequestTokenFactory.createOAuth2Request("id", false)
         OAuth2Authentication anotherAuthentication = new OAuth2Authentication(storedOAuth2Request, new TestAuthentication("test", true))
         assert expectedOAuth2AccessToken == tokenStore.getAccessToken(anotherAuthentication)

@@ -18,6 +18,7 @@ package oauth2.authentication;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -95,7 +97,10 @@ public class UserAuthenticationProvider implements AuthenticationProvider, Messa
             LOGGER.debug("User {}: Credentials have expired", user.getUserId());
             authorities = ImmutableSet.of(new SimpleGrantedAuthority("ROLE_" + Roles.MUST_CHANGE_PASSWORD));
         } else {
-            authorities = user.getAuthorities();
+            authorities = user.getEntries().stream() //
+                    .filter(entry -> Objects.equal("AUTHORITY", entry.getName())) //
+                    .map(entry -> new SimpleGrantedAuthority(entry.getData())) //
+                    .collect(Collectors.toSet());
         }
         return authorities;
     }

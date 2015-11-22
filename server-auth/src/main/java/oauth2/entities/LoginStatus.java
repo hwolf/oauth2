@@ -23,7 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
-import oauth2.jpa.converters.InstantConverter;
+import oauth2.entities.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_login_status")

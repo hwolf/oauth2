@@ -15,6 +15,8 @@
  */
 package oauth2.entities
 
+import nl.jqno.equalsverifier.EqualsVerifier
+import nl.jqno.equalsverifier.Warning
 import spock.lang.Specification
 
 class EntrySpec extends Specification {
@@ -33,24 +35,12 @@ class EntrySpec extends Specification {
         expectedData == entry.data
     }
 
-    def "filterEntriesByName: When parameter entries is null return empty list"() {
+    def "equals/hashCode"() {
 
-        when:
-        def  actual = Entry.filterEntriesByName("A entry name", null)
-
-        then:
-        actual == [] as Set
-    }
-
-    def "filterEntriesByName: Should return data from all entries with given name"() {
-
-        when:
-        def  actual = Entry.filterEntriesByName("Entry 1", [
-            Entry.create("Entry 1", "Data entry 1"),
-            Entry.create("Entry 2", "Data entry 2")
-        ])
-
-        then:
-        actual == ["Data entry 1"] as Set
+        expect:
+        EqualsVerifier.forClass(Entry) //
+                .suppress(Warning.NONFINAL_FIELDS) //
+                .allFieldsShouldBeUsed() //
+                .verify()
     }
 }

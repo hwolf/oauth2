@@ -132,6 +132,6 @@ public class ClientServiceImpl implements ClientDetailsService {
                 return mapper;
             }
         }
-        return EntryMapper.valueOf(name);
+        return EntryMapper.IGNORE;
     }
 }

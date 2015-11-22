@@ -100,4 +100,43 @@ class UserSpec extends Specification {
         then:
         user.accountLocked
     }
+
+    def "getEntries: When no entries are added return empty list"() {
+
+        when:
+        User user = new User()
+        def  entries = user.entries
+
+        then:
+        entries.empty
+    }
+
+    def "getEntries: Should return all entries"() {
+
+        when:
+        User user = new User()
+        user.addEntry("Entry 1", "Data 1")
+        user.addEntry("Entry 2", "Data 2")
+        def entries = user.entries
+
+        then:
+        entries.name as Set == ["Entry 1", "Entry 2"] as Set
+    }
+
+    def "removeEntry: A removed entry should not in list"() {
+
+        when:
+        User user = new User()
+        user.addEntry("Entry 1", "Data 1")
+        user.addEntry("Entry 2", "Data 2")
+
+        then:
+        user.entries.name.contains("Entry 2")
+
+        when:
+        user.removeEntry("Entry 2", "Data 2")
+
+        then:
+        !user.entries.name.contains("Entry 2")
+    }
 }

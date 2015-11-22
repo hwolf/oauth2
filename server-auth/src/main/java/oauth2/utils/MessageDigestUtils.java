@@ -26,14 +26,14 @@ public class MessageDigestUtils {
     }
 
     public static byte[] digest(byte[] input) {
-        return getMd5MessageDigest().digest(input);
+        return getMessageDigest().digest(input);
     }
 
-    public static MessageDigest getMd5MessageDigest() {
+    public static MessageDigest getMessageDigest() {
         try {
-            return MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) { // NOSONAR
-            throw new IllegalStateException("MD5 algorithm not available. Fatal (should be in the JDK).");
+            return MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            throw new IllegalStateException("SHA-256 algorithm not available. Fatal (should be in the JDK).", ex);
         }
     }
 

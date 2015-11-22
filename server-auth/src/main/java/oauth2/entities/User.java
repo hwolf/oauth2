@@ -17,8 +17,6 @@ package oauth2.entities;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -31,8 +29,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.StringUtils;
 
 import com.google.common.collect.ImmutableSet;
@@ -41,7 +37,7 @@ import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import oauth2.jpa.converters.InstantConverter;
+import oauth2.entities.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_users")
@@ -67,9 +63,23 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LoginStatus loginStatus;
 
-    public Set<GrantedAuthority> getAuthorities() {
-        return Entry.filterEntriesByName("AUTHORITY", entries).stream()
-                .map(authority -> new SimpleGrantedAuthority(authority)).collect(Collectors.toSet());
+    public LoginStatus getLoginStatus() {
+        if (loginStatus == null) {
+            loginStatus = new LoginStatus(userId);
+        }
+        return loginStatus;
+    }
+
+    public boolean isEnabled() {
+        return StringUtils.hasText(password);
+    }
+
+    public boolean isPasswordExpired() {
+        return passwordExpiresAt == null || !passwordExpiresAt.isAfter(Instant.now());
+    }
+
+    public boolean isAccountLocked() {
+        return getLoginStatus().getFailedLoginAttempts() >= 3;
     }
 
     public Collection<Entry> getEntries() {
@@ -91,24 +101,5 @@ public class User {
             return;
         }
         entries.remove(Entry.create(name, value));
-    }
-
-    public LoginStatus getLoginStatus() {
-        if (loginStatus == null) {
-            loginStatus = new LoginStatus(userId);
-        }
-        return loginStatus;
-    }
-
-    public boolean isEnabled() {
-        return StringUtils.hasText(password);
-    }
-
-    public boolean isPasswordExpired() {
-        return passwordExpiresAt == null || !passwordExpiresAt.isAfter(Instant.now());
-    }
-
-    public boolean isAccountLocked() {
-        return getLoginStatus().getFailedLoginAttempts() >= 3;
     }
 }

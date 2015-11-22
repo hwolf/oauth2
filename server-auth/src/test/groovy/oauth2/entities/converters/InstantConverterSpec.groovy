@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package oauth2.jpa.converters
+package oauth2.entities.converters
 
 import java.sql.Timestamp
 import java.time.Instant

@@ -33,8 +33,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public final class MyPasswordEncoder implements PasswordEncoder {
 
-    static final char SEPARATOR = '\t';
-
+    private static final char SEPARATOR = '\t';
     private static final String PLAIN = "plain";
 
     private final String nameOfDefaultEncoder;

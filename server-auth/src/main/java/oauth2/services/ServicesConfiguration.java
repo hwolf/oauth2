@@ -49,7 +49,7 @@ public class ServicesConfiguration {
     @Bean
     public PasswordValidator passwordValidator() {
         return new PasswordValidator(ImmutableList.of( //
-                new LengthRule(8, 40), // length between 8 and 16 characters
+                new LengthRule(8, 40), // length of password
                 new UsernameRule(false, true), // password different than user id
                 new SourceRule(), // new password different than old password
                 new UppercaseCharacterRule(1), // at least one upper-case character

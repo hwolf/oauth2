@@ -43,8 +43,9 @@ import oauth2.services.ChangePasswordService;
 @RequestMapping(Urls.CHANGE_PASSWORD)
 public class ChangePasswordController {
 
-    static final String FORM_ATTRIBUTE_NAME = "changePassword";
-    private static final String VIEW_CHANGE_PASSWORD = "change-password"; // NOSONAR
+    public static final String FORM_ATTRIBUTE_NAME = "changePassword";
+
+    private static final String VIEW_CHANGE_PASSWORD = "change-password";
 
     private final PasswordValidator passwordValidator;
     private final ChangePasswordService changePasswordService;
@@ -81,9 +82,9 @@ public class ChangePasswordController {
         }
         try {
             changePasswordService.changePassword(form.getUserId(), form.getOldPassword(), form.getNewPassword());
-        } catch (ChangePasswordException ex) { // NOSONAR
+        } catch (ChangePasswordException ex) {
             result.rejectValue("userId", ex.getMessage(), ex.getLocalizedMessage());
-        } catch (AuthenticationException ex) { // NOSONAR
+        } catch (AuthenticationException ex) {
             result.reject(ex.getMessage(), ex.getLocalizedMessage());
         }
         if (result.hasErrors()) {

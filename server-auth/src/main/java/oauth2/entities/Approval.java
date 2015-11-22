@@ -30,7 +30,7 @@ import org.springframework.security.oauth2.provider.approval.Approval.ApprovalSt
 
 import lombok.Getter;
 import lombok.Setter;
-import oauth2.jpa.converters.InstantConverter;
+import oauth2.entities.converters.InstantConverter;
 
 @Entity
 @Table(name = "t_approvals")
